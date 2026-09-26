@@ -1,5 +1,5 @@
 /**********************************************************************
- * THE VETO ROYALE / SURVIVOR'S BEWARE — backend
+ * SURVIVORS BEWARE — backend
  * ------------------------------------------------------------------
  * One Google Sheet is the data store. This script exposes it as a
  * tiny JSON API that the GitHub Pages site reads from and writes to.
@@ -8,7 +8,7 @@
  * ONE-TIME SETUP
  *   1. Extensions > Apps Script, paste this file, Save.
  *   2. Run setup()  (authorize when prompted). This builds the tabs
- *      and seeds Season 28 so the site works immediately.
+ *      and seeds Season 51 so the site works immediately.
  *   3. Set your admin passphrase:
  *        Project Settings (gear) > Script Properties > Add property
  *        Name: ADMIN_PASSPHRASE   Value: whatever-you-choose
@@ -29,7 +29,7 @@
  *********************************************************************/
 
 const SS = SpreadsheetApp.getActiveSpreadsheet();
-const CURRENT = 'bb28';                       // active season id
+const CURRENT = 's51';                        // active season id
 
 const TABS = {
   seasons:   ['seasonId','show','title','episode','castSize','locked','theme'],
@@ -145,7 +145,7 @@ function submitEntry_(b){
   const ranks = b.ranks || {};
   const vals = cast.map(c => Number(ranks[c.castId]));
   if (vals.some(v => !(v >= 1 && v <= N)) || new Set(vals).size !== N)
-    return { ok:false, error:'Rank every houseguest exactly once, 1 to ' + N };
+    return { ok:false, error:'Rank every castaway exactly once, 1 to ' + N };
 
   replaceRows_('picks', sid, b.name, cast.map(c => [sid, b.name, Number(c.castId), Number(ranks[c.castId])]));
 
@@ -178,7 +178,7 @@ function removePlayer(b){
 function enterEviction(b){
   const ok = setCell_('cast', o => o.seasonId === CURRENT && Number(o.castId) === Number(b.castId),
                       'actual', Number(b.placement));
-  return ok ? { ok:true } : { ok:false, error:'Houseguest not found' };
+  return ok ? { ok:true } : { ok:false, error:'Castaway not found' };
 }
 
 function undoEviction(b){
@@ -249,78 +249,54 @@ function hash_(s){
 }
 
 /* ============================ SETUP ============================ */
-// Run once from the editor. Builds tabs and seeds Season 28.
+// Run once from the editor. Builds tabs and seeds Season 51.
 
 function setup(){
   Object.keys(TABS).forEach(t => { const sh = tab_(t); if (sh.getLastRow() === 0) sh.appendRow(TABS[t]); });
 
   const theme = JSON.stringify({
-    name:'Time Travel', bg:'#0d0221', surface:'#1f1140', line:'#3d2568',
-    text:'#fdf1e0', muted:'#a996c9', accent:'#ff7a1a', gold:'#ffcc33',
-    danger:'#ff3864', evicted:'#4a3b6b', good:'#2de8c9'
+    name:'Torchlight', bg:'#0a130e', surface:'#13221a', line:'#2b4133',
+    text:'#f4ead5', muted:'#9fb09a', accent:'#ff8a2b', gold:'#f2c14e',
+    danger:'#e5484d', evicted:'#3a3a2c', good:'#6fd08c'
   });
 
-  seedTab_('seasons', [['bb28','big-brother','The Veto Royale — Season 28', 2, 17, false, theme]]);
+  seedTab_('seasons', [['s51','survivor','Survivors Beware — Season 51', 2, 21, false, theme]]);
 
+  // Survivor 51 cast (CBS). 4th value = finish placement once voted out (21 = first out).
   const CAST = [
-    [1,'Ashley Trail','Bartender',17],[2,'Barrett Pfeiffer','Jumbotron Engineer',''],
-    [3,'Chuk Anyanwu','Supply Chain Analyst',''],[4,'Drew Campbell','Dental Assistant',''],
-    [5,'Haley Thogmartin','Telemedicine Exec',''],[6,'Jason De Puy','Drag Queen',''],
-    [7,'Kamu Kirk','MMA Fighter',''],[8,'LaTrice Verrett','Boutique Sales',''],
-    [9,'Lyric Medeiros','Attorney',''],[10,'Mallory Aurichio','Rocket Scientist',''],
-    [11,'Melody Morris','Game Show Host',''],[12,'Rome Seymour','Pickleball Coach',16],
-    [13,'Taylor Brown','School Counselor',''],[14,'Yash Patel','Financial Analyst',''],
-    [15,'Angela Murray','Realtor',''],[16,'Rick Devens','Comms Director',''],
-    [17,'Dee Valladares','Entrepreneur','']
+    [1,'Aaliyah Puglia','Chef',21],[2,'Alexis Levine','Criminal Defense Attorney',''],
+    [3,'Ana Sani','Voice Actress',''],[4,'Brady Booker','Pro Wrestler',''],
+    [5,'Carter Krull','Livestock Farmer',''],[6,'Cristian Chavez','Head of HR',''],
+    [7,'Danny Kilby','Game Designer',''],[8,'Devin Way','Actor',''],
+    [9,'Eric Macksoud','Mental Health Counselor',''],[10,'Jelly Loblack','Sociology Professor',''],
+    [11,'Jenna Doore','Wedding Photographer',''],[12,'Kristin Flickinger','Crisis Management',''],
+    [13,'Lewis Kelly','Farmer',''],[14,'Linnea Capobianco','Entrepreneur',''],
+    [15,'Maggie Nestor','Farmer',''],[16,'Mike Pinsky','Baseball Executive',''],
+    [17,'Ori Jean-Charles','Personal Trainer',''],[18,'Patt Cannaday','Federal Prosecutor',''],
+    [19,'Rob Antonson','Airline Gate Agent',''],[20,'Sharonda Cox','OBGYN Resident',''],
+    [21,'Thien An Nguyen','Medical Student','']
   ];
-  seedTab_('cast', CAST.map(c => ['bb28', c[0], c[1], c[2], c[3]]));
+  seedTab_('cast', CAST.map(c => ['s51', c[0], c[1], c[2], c[3]]));
 
-  const PICKS = {
-    Tyler:[9,16,8,12,4,3,2,1,13,11,6,15,17,14,7,10,5],
-    Lauren:[15,4,5,8,16,11,1,12,7,14,10,13,2,17,9,6,3],
-    Lisa:[14,8,3,7,4,11,2,12,13,9,15,16,10,17,5,6,1],
-    Jeremy:[13,1,15,14,3,17,2,5,4,12,16,9,6,11,10,8,7],
-    'Natalie/Josh':[13,10,1,15,11,8,3,2,6,17,4,12,16,14,9,7,5],
-    Brandie:[16,9,11,4,10,5,2,14,3,13,12,7,15,17,8,6,1],
-    Morgan:[14,3,6,4,16,12,8,11,7,9,15,13,10,17,2,5,1],
-    Thomas:[12,4,8,7,13,16,10,14,3,15,9,11,6,17,2,5,1],
-    Carol:[17,8,9,4,5,12,6,15,1,14,13,3,16,7,10,11,2],
-    Pat:[6,5,12,15,7,10,14,13,8,17,4,11,16,1,9,2,3],
-    Jamie:[11,1,6,4,5,9,15,16,13,8,2,12,7,17,14,3,10],
-    Kelly:[11,2,3,13,5,10,1,6,7,14,16,4,9,17,15,8,12],
-    AI:[15,12,2,7,4,10,5,8,1,3,6,14,11,9,17,16,13]
-  };
-  const playerRows = [], pickRows = [];
-  Object.keys(PICKS).forEach(name => {
-    playerRows.push(['bb28', name, name === 'AI', '', new Date().toISOString()]);
-    PICKS[name].forEach((rank, i) => pickRows.push(['bb28', name, i + 1, rank]));
-  });
-  seedTab_('players', playerRows);
-  seedTab_('picks',   pickRows);
+  // Same group as the BB pool, on the roster but with no picks yet — each submits their own.
+  const ROSTER = ['Tyler','Lauren','Lisa','Jeremy','Natalie/Josh','Brandie','Morgan',
+                  'Thomas','Carol','Pat','Jamie','Kelly','AI'];
+  seedTab_('players', ROSTER.map(name => ['s51', name, name === 'AI', '', '']));
+  seedTab_('picks',   []);
+  seedTab_('answers', []);
 
   const Q = [
-    ['q1','Will a houseguest return after being evicted?',''],
-    ['q2','Will a showmance form?','Yes'],
-    ['q3','Will a major alliance fall apart before jury?',''],
-    ['q4','Will someone cry in the Diary Room?','Yes'],
-    ['q5','Will a houseguest get into a shouting match?',''],
-    ['q6','Will a secret room be discovered?',''],
-    ['q7','Will America vote to influence the game?','Yes'],
-    ['q8','Will a power be used that saves someone unexpectedly?',''],
-    ['q9','Will a backdoor plan succeed?','Yes']
+    ['q1','Will a hidden immunity idol be found before the merge?',''],
+    ['q2','Will an idol be played and actually cancel votes?',''],
+    ['q3','Will someone be medically evacuated?',''],
+    ['q4','Will anyone quit the game?',''],
+    ['q5','Will a tie go all the way to a rock draw?',''],
+    ['q6','Will someone be blindsided with an idol in their pocket?',''],
+    ['q7','Will the winner have won fire-making at Final 4?',''],
+    ['q8','Will the winner get a unanimous jury vote?',''],
+    ['q9','Will someone cry at Tribal Council?','']
   ];
-  seedTab_('questions', Q.map(q => ['bb28', q[0], q[1], q[2]]));
-
-  // seed answers for the resolved questions so the circumstantial bonuses match your sheet
-  const RESOLVED = ['q2','q4','q7','q9'];
-  const ansRows = [];
-  Object.keys(PICKS).forEach(name => {
-    RESOLVED.forEach(q => {
-      const no = (name === 'Jeremy' || name === 'Jamie') && (q === 'q7' || q === 'q9');
-      ansRows.push(['bb28', name, q, no ? 'No' : 'Yes']);
-    });
-  });
-  seedTab_('answers', ansRows);
+  seedTab_('questions', Q.map(q => ['s51', q[0], q[1], q[2]]));
 
   SpreadsheetApp.getUi && SpreadsheetApp.flush();
 }
