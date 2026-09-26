@@ -152,12 +152,58 @@ footer a{color:var(--muted);cursor:pointer;text-decoration:underline}
 .field label{display:block;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 select,input[type=text],input[type=password],input[type=number]{width:100%;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--font-body);font-size:.95rem;padding:10px 12px}
 input:focus,select:focus{outline:none;border-color:var(--accent)}
-.ranklist{max-height:46vh;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:4px 10px;background:var(--bg-2)}
-.rankrow{display:grid;grid-template-columns:1fr 66px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+.ranklist{list-style:none;max-height:52vh;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:10px;padding:4px 8px;background:var(--bg-2)}
+.ranklist.sorting{user-select:none;-webkit-user-select:none}
+.rankrow{display:grid;grid-template-columns:34px 52px 1fr;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line);background:var(--bg-2)}
 .rankrow:last-child{border-bottom:none}
-.rankrow .rn{font-size:.9rem}.rankrow .rn small{display:block;color:var(--muted);font-size:.7rem}
-.rankrow input{padding:7px;text-align:center}
-.rankrow input.dupe{border-color:var(--danger)}
+.rankrow .handle{width:34px;height:38px;border:1px solid transparent;border-radius:8px;background:none;color:var(--muted);font-size:1.15rem;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.rankrow .handle:hover,.rankrow .handle:focus-visible{color:var(--accent);border-color:var(--accent-dim);outline:none}
+.rankrow .place{font-family:var(--font-display);font-weight:700;font-size:.92rem;color:var(--muted);text-align:center;white-space:nowrap}
+.rankrow .place.crown{color:var(--gold)}
+.rankrow.firstout .place{color:var(--danger)}
+.rankrow .rn{background:none;border:none;color:var(--text);text-align:left;cursor:pointer;padding:4px 2px;font-family:var(--font-body);min-width:0}
+.rankrow .rname{font-size:.92rem;font-weight:600}
+.rankrow .rn small{display:block;color:var(--muted);font-size:.7rem}
+.rankrow .outtag{color:var(--danger);font-weight:600}
+.rankrow .bio{grid-column:2/-1;display:none;font-size:.8rem;line-height:1.45;padding:0 4px 8px 2px}
+.rankrow .bio .facts{font-family:var(--font-mono);font-size:.68rem;color:var(--accent);margin-bottom:3px}
+.rankrow.open .bio{display:block}
+.rankrow.dragging{position:relative;z-index:2;background:var(--surface-2);border:1px solid var(--accent);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+.rankrow.dragging .handle{cursor:grabbing;color:var(--accent)}
+.lockline{margin-top:12px;font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
+.lockline b{color:var(--text);font-weight:600}
+.lockbanner{font-size:.8rem;padding:10px 12px;border-radius:10px;margin-bottom:14px;background:#241a08;border:1px solid #5a4012;color:var(--gold)}
+.lockbanner b{color:var(--text)}
+.lockbanner.locked{background:#230810;border-color:#4a1526;color:var(--danger)}
+.hint.tight{margin:0 0 8px}
+.muted{color:var(--muted)}
+.minilabel{display:block;font-family:var(--font-mono);font-size:.66rem;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.qgrid{display:grid;gap:10px}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.qhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.qtext{font-weight:600;font-size:.95rem}
+.qstatus{flex:0 0 auto;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid var(--line);color:var(--muted)}
+.qstatus.done{color:var(--gold);border-color:#5a4a12;background:#241d06}
+.qsides{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.qside{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.qside .qk{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.qside .qnames{font-size:.8rem;margin-top:3px}
+.qside.win{border-color:#1f5a3a;background:#0b2418}.qside.win .qk{color:var(--good)}
+.qside.lose{opacity:.55}
+.bootrow,.rosterrow{display:grid;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.bootrow{grid-template-columns:1fr 70px auto auto}
+.rosterrow{grid-template-columns:1fr auto auto auto}
+.bootrow:last-child,.rosterrow:last-child{border-bottom:none}
+.bootrow input{padding:6px;text-align:center}
+.bootrow .btn,.rosterrow .btn{padding:6px 11px;font-size:.72rem}
+.bname,.rosterrow .rname{font-size:.88rem;font-weight:600}
+.rstat{font-family:var(--font-mono);font-size:.66rem;white-space:nowrap}.rstat.yes{color:var(--good)}.rstat.no{color:var(--muted)}
+.wikirow{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:.84rem}
+.wst{font-family:var(--font-mono);font-size:.64rem;text-transform:uppercase;letter-spacing:.06em}
+.wst.new{color:var(--good)}.wst.same{color:var(--muted)}.wst.conflict{color:var(--danger)}
+.stickymsg{position:sticky;bottom:0}
+.stickymsg .msg{box-shadow:0 -8px 20px rgba(0,0,0,.35)}
+.stickymsg .msg:not(.ok):not(.err){background:var(--surface-2);border:1px solid var(--line)}
 .qrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .qrow:last-child{border-bottom:none}
 .qrow .qt{font-size:.86rem}
@@ -172,7 +218,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 .adminblock{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
 .adminblock h3{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
 .inline{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
-@media (max-width:560px){.row{grid-template-columns:26px 1fr auto;gap:8px;padding:10px}.bar{display:none}.wall{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}.inline{grid-template-columns:1fr}}
+@media (max-width:560px){.row{grid-template-columns:26px 1fr auto;gap:8px;padding:10px}.bar{display:none}.wall{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}.inline{grid-template-columns:1fr}.qsides{grid-template-columns:1fr}.rosterrow{grid-template-columns:1fr auto auto}.rosterrow .rstat{grid-column:1;grid-row:2}.bootrow{grid-template-columns:1fr 60px auto auto}#popRules{position:fixed;left:16px;right:16px;top:96px;width:auto;max-width:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -194,12 +240,17 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
     <div class="navlink-row">
       <button class="navlink" data-target="standingsSection"><span class="navlink-ic">◷</span><span class="navlink-label">Standings</span></button>
       <button class="infobtn" data-pop="popStandings" aria-label="About Standings">i</button>
-      <div class="infopop" id="popStandings">Score = how far each guess lands from reality — lowest wins. Win probabilities come from thousands of simulated eviction orders.</div>
+      <div class="infopop" id="popStandings">Score = how far each guess lands from reality — lowest wins. Win probabilities come from thousands of simulated boot orders.</div>
     </div>
     <div class="navlink-row">
       <button class="navlink" data-target="closeSection"><span class="navlink-ic">◎</span><span class="navlink-label">Am I Close?</span></button>
       <button class="infobtn" data-pop="popClose" aria-label="About Am I Close">i</button>
       <div class="infopop" id="popClose">Pick anyone to see which calls already hit, what's still live, and their single biggest liability left on the board.</div>
+    </div>
+    <div class="navlink-row">
+      <button class="navlink" data-target="questionsSection"><span class="navlink-ic">✦</span><span class="navlink-label">Questions</span></button>
+      <button class="infobtn" data-pop="popQuestions" aria-label="About the circumstantial questions">i</button>
+      <div class="infopop" id="popQuestions">The yes/no calls everyone made. Each one you get right knocks a point off your score once the admin resolves it.</div>
     </div>
   </aside>
   <button class="navToggle" id="navToggle" aria-label="Toggle navigation">☰</button>
@@ -224,7 +275,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
           <span id="seasonline">LOADING…</span>
           <span class="popwrap">
             <button class="helpBtn" data-pop="popRules" aria-label="How scoring works">?</button>
-            <div class="infopop below" id="popRules">Rank the castaways 1&ndash;N by predicted finish. Score = how far each guess lands from reality. <b>Lowest score wins.</b> Nail a placement and you subtract a point; call the winner and you subtract three.</div>
+            <div class="infopop below" id="popRules">Put the castaways in the order you think they'll go out. Score = how far each guess lands from reality. <b>Lowest score wins.</b> Nail a placement and you subtract a point; call the winner and you subtract three. Each circumstantial question you get right is another point off.</div>
           </span>
         </div>
       </div>
@@ -233,11 +284,13 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
       <button class="btn primary" id="btnSubmit">Submit / edit my picks</button>
       <button class="btn ghost" id="btnAdmin">Admin</button>
     </div>
+    <div class="lockline" id="lockline"></div>
   </header>
 
   <section id="wallSection"><div class="eyebrow">The Torch Wall</div><div class="wall" id="wall"></div></section>
   <section id="standingsSection"><div class="eyebrow">Standings &amp; Win Probability</div><div class="board" id="board"></div></section>
   <section id="closeSection"><div class="eyebrow">Am I Close?</div><div class="picker" id="picker"></div><div class="card" id="detail"></div></section>
+  <section id="questionsSection"><div class="eyebrow">Circumstantial Questions</div><div class="qgrid" id="qlist"></div></section>
   <footer id="footer"></footer>
   </div>
   </main>
@@ -247,12 +300,16 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 <div class="overlay" id="submitOverlay">
   <div class="panel">
     <h2>Your Picks</h2>
-    <div class="desc">Pick your name, then rank every castaway from 1 (Sole Survivor) to N (first one voted out). You can come back and edit from this same device.</div>
-    <div class="field"><label>Who are you?</label><select id="sName"></select></div>
-    <div class="field"><label>Ranking &mdash; each number once</label><div class="ranklist" id="sRanks"></div><div class="hint" id="sRankMsg"></div></div>
-    <div class="field" id="sQwrap"><label>Circumstantial guesses</label><div id="sQuestions"></div></div>
-    <div id="sMsg"></div>
+    <div id="sLock"></div>
+    <div class="field"><label for="sName">Who are you?</label><select id="sName"></select><div class="hint" id="sNameMsg"></div></div>
+    <div class="field">
+      <label>Boot order &mdash; drag to arrange</label>
+      <div class="hint tight">Top = first voted out &middot; bottom = Sole Survivor. Drag a row by its <b>⠿</b> handle (or focus the handle and use ↑ ↓). Tap a name to read their profile.</div>
+      <ol class="ranklist" id="sRanks"></ol>
+    </div>
+    <div class="field" id="sQwrap"><label>Circumstantial questions &mdash; answer every one</label><div id="sQuestions"></div><div class="hint" id="sQMsg"></div></div>
     <div class="rowbtns"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="sSave">Save picks</button></div>
+    <div id="sMsg" class="stickymsg"></div>
   </div>
 </div>
 
@@ -266,72 +323,96 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 
     <div class="adminblock">
       <h3>Record a vote-out</h3>
-      <div class="inline"><div><label style="font-family:var(--font-mono);font-size:.66rem;color:var(--muted);text-transform:uppercase">Castaway</label><select id="aEvictWho"></select></div>
-      <div style="width:96px"><label style="font-family:var(--font-mono);font-size:.66rem;color:var(--muted);text-transform:uppercase">Placement</label><input type="number" id="aEvictPlace" min="1"/></div></div>
+      <div class="inline"><div><label class="minilabel">Castaway</label><select id="aEvictWho"></select></div>
+      <div style="width:96px"><label class="minilabel">Placement</label><input type="number" id="aEvictPlace" min="1"/></div></div>
       <div class="rowbtns"><button class="btn" id="aEvict">Snuff the torch</button></div>
     </div>
 
     <div class="adminblock">
-      <h3>Resolve a circumstantial question</h3>
-      <div class="field"><select id="aQ"></select></div>
-      <div class="rowbtns"><button class="btn" data-q="Yes">Mark Yes</button><button class="btn" data-q="No">Mark No</button></div>
+      <h3>Boot order</h3>
+      <div class="hint tight">Clicked the wrong person? Undo them, or change the placement and save.</div>
+      <div id="aBoots"></div>
     </div>
 
     <div class="adminblock">
-      <h3>Roster</h3>
+      <h3>Auto-fill from Wikipedia</h3>
+      <div class="hint tight" id="aWikiHint"></div>
+      <div class="rowbtns" style="margin-top:0"><button class="btn" id="aWikiCheck">Check Wikipedia</button></div>
+      <div id="aWiki"></div>
+    </div>
+
+    <div class="adminblock">
+      <h3>Picks lock</h3>
+      <div class="hint tight" id="aLockState"></div>
+      <div class="inline"><div><select id="aLockMode">
+        <option value="auto">Automatic</option>
+        <option value="locked">Locked now</option>
+        <option value="open">Open — let late picks in</option>
+      </select></div><button class="btn" id="aLockBtn">Save</button></div>
+    </div>
+
+    <div class="adminblock">
+      <h3>Circumstantial questions</h3>
+      <div class="field"><select id="aQ"></select></div>
+      <div class="rowbtns"><button class="btn ghost" data-q="">Reopen</button><button class="btn" data-q="Yes">Mark Yes</button><button class="btn" data-q="No">Mark No</button></div>
+    </div>
+
+    <div class="adminblock">
+      <h3>Players</h3>
       <div class="inline"><div><input type="text" id="aAddName" placeholder="new player name"/></div><button class="btn" id="aAdd">Add player</button></div>
-      <div class="inline" style="margin-top:10px"><div><select id="aRemove"></select></div><button class="btn ghost" id="aRemoveBtn">Remove</button></div>
+      <div class="hint" id="aRosterSum"></div>
+      <div id="aRoster"></div>
     </div>
 
     <div class="adminblock">
       <h3>Season</h3>
-      <div class="inline"><div><label style="font-family:var(--font-mono);font-size:.66rem;color:var(--muted);text-transform:uppercase">Episode #</label><input type="number" id="aEp" min="1"/></div><button class="btn" id="aEpBtn">Set episode</button></div>
+      <div class="inline"><div><label class="minilabel">Episode #</label><input type="number" id="aEp" min="1"/></div><button class="btn" id="aEpBtn">Set episode</button></div>
     </div>
 
-    <div id="aMsg"></div>
     <div class="rowbtns"><button class="btn ghost" data-close>Close</button></div>
+    <div id="aMsg" class="stickymsg"></div>
   </div>
 </div>
 
+<script src="season.js"></script>
 <script>
 /* ===================================================================
    CONFIG — paste your Apps Script Web App /exec URL here to go live.
-   Leave empty to run on the built-in Season 51 demo data.
+   Leave empty to preview on demo data built from season.js.
    (This must be the Survivor deployment, not the Big Brother one.)
    =================================================================== */
 const API_URL = "";
 
-/* ---- demo fallback: real S51 cast, made-up picks so the board has something to show ---- */
-const DEMO = {
-  season:{seasonId:"s51",show:"survivor",title:"Survivors Beware — Season 51",episode:2,castSize:21,locked:false,
-    theme:{name:"Torchlight"}},
-  cast:[
-    {id:1,name:"Aaliyah Puglia",occ:"Chef",actual:21},{id:2,name:"Alexis Levine",occ:"Criminal Defense Attorney",actual:null},
-    {id:3,name:"Ana Sani",occ:"Voice Actress",actual:null},{id:4,name:"Brady Booker",occ:"Pro Wrestler",actual:null},
-    {id:5,name:"Carter Krull",occ:"Livestock Farmer",actual:null},{id:6,name:"Cristian Chavez",occ:"Head of HR",actual:null},
-    {id:7,name:"Danny Kilby",occ:"Game Designer",actual:null},{id:8,name:"Devin Way",occ:"Actor",actual:null},
-    {id:9,name:"Eric Macksoud",occ:"Mental Health Counselor",actual:null},{id:10,name:"Jelly Loblack",occ:"Sociology Professor",actual:null},
-    {id:11,name:"Jenna Doore",occ:"Wedding Photographer",actual:null},{id:12,name:"Kristin Flickinger",occ:"Crisis Management",actual:null},
-    {id:13,name:"Lewis Kelly",occ:"Farmer",actual:null},{id:14,name:"Linnea Capobianco",occ:"Entrepreneur",actual:null},
-    {id:15,name:"Maggie Nestor",occ:"Farmer",actual:null},{id:16,name:"Mike Pinsky",occ:"Baseball Executive",actual:null},
-    {id:17,name:"Ori Jean-Charles",occ:"Personal Trainer",actual:null},{id:18,name:"Patt Cannaday",occ:"Federal Prosecutor",actual:null},
-    {id:19,name:"Rob Antonson",occ:"Airline Gate Agent",actual:null},{id:20,name:"Sharonda Cox",occ:"OBGYN Resident",actual:null},
-    {id:21,name:"Thien An Nguyen",occ:"Medical Student",actual:null}
-  ],
-  questions:[{qId:"q1",text:"Will a hidden immunity idol be found before the merge?",isTrue:null},{qId:"q3",text:"Will someone be medically evacuated?",isTrue:null},{qId:"q5",text:"Will a tie go all the way to a rock draw?",isTrue:null},{qId:"q9",text:"Will someone cry at Tribal Council?",isTrue:null}],
-  _players:["Tyler","Lauren","Lisa","Jeremy","Morgan","AI"]
-};
-// deterministic shuffle (mulberry32) so the demo board looks the same on every load
-function demoRanks(seed,n){
-  let t=seed; const rnd=()=>{t=t+0x6D2B79F5|0;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296;};
-  const a=[...Array(n)].map((_,i)=>i+1);
-  for(let i=n-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
-  return a;
-}
-
 let MODEL=null;           // normalized live model
 const LIVE = !!API_URL;
 const N_SIMS = 20000;
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---- demo: real cast from season.js, made-up picks and answers so the board has something to show ---- */
+// deterministic PRNG (mulberry32) so the demo board looks the same on every load
+function rng(seed){
+  let t=seed;
+  return ()=>{t=t+0x6D2B79F5|0;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296;};
+}
+function demoModel(){
+  const S=SEASON, N=S.cast.length, rnd=rng(51);
+  const cast=S.cast.map(c=>({id:c.id,name:c.name,occ:c.occ,age:c.age,home:c.home,tribe:c.tribe,bio:c.bio,actual:c.out||null}));
+  const questions=S.questions.map(q=>({qId:q.qId,text:q.text,isTrue:null}));
+  const players=S.roster.filter((n,i)=>i<5||n==="AI").map(name=>{
+    const order=[...Array(N)].map((_,i)=>i+1);
+    for(let i=N-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    const ranks={}; order.forEach((r,i)=>ranks[cast[i].id]=r);
+    const answers={}; questions.forEach(q=>answers[q.qId]=rnd()<.5?"Yes":"No");
+    return {name,isAI:name==="AI",bonus:0,ranks,answers};
+  });
+  const boots=cast.filter(c=>c.actual!==null).length, after=S.lockAfterBoots||0;
+  return {
+    season:{seasonId:S.seasonId,show:S.show,title:S.title,episode:boots+1,castSize:N,
+      locked:after>0&&boots>=after,lockMode:"auto",lockAfterBoots:after,lockNote:S.lockNote||"",bootsSoFar:boots,
+      wikiTitle:S.wikiTitle||"",theme:S.theme},
+    cast,questions,players,roster:players.map(p=>({name:p.name,submitted:true}))
+  };
+}
 
 /* ---------- data loading / normalization ---------- */
 async function api(payload){
@@ -339,21 +420,14 @@ async function api(payload){
   return r.json();
 }
 async function loadModel(){
-  if(LIVE){
-    const r = await fetch(API_URL+"?action=getSeason");
-    const j = await r.json();
-    if(!j.ok) throw new Error(j.error||"load failed");
-    const d = j.data;
-    return {season:d.season, cast:d.cast, questions:d.questions,
-      players:d.players.filter(p=>p.submitted).map(p=>({name:p.name,isAI:p.isAI,bonus:p.bonus,ranks:p.ranks})),
-      roster:d.players.map(p=>p.name)};
-  }
-  // demo → generated {castId:rank} maps
-  const players = DEMO._players.map((name,k)=>{
-    const ranks={}; demoRanks(k+51,DEMO.cast.length).forEach((r,i)=>ranks[i+1]=r);
-    return {name,isAI:name==="AI",bonus:0,ranks};
-  });
-  return {season:DEMO.season,cast:DEMO.cast,questions:DEMO.questions,players,roster:players.map(p=>p.name)};
+  if(!LIVE) return demoModel();
+  const r = await fetch(API_URL+"?action=getSeason");
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.error||"load failed");
+  const d = j.data;
+  return {season:d.season, cast:d.cast, questions:d.questions,
+    players:d.players.filter(p=>p.submitted).map(p=>({name:p.name,isAI:p.isAI,bonus:p.bonus,ranks:p.ranks,answers:p.answers||{}})),
+    roster:d.players.map(p=>({name:p.name,submitted:p.submitted}))};
 }
 
 /* ---------- theming from data ---------- */
@@ -405,11 +479,21 @@ function computeStandings(){
   maxProb=Math.max(...standings.map(s=>s.prob),0.0001);
 }
 
+function lockText(s){
+  if(s.locked) return s.lockMode==="locked" ? "🔒 Picks are locked." : `🔒 Picks locked ${esc(s.lockNote)} — no more changes.`;
+  if(s.lockMode==="open") return "🔓 Picks are open (admin override) — get yours in.";
+  if(!s.lockAfterBoots) return "";
+  const left=s.lockAfterBoots-s.bootsSoFar;
+  return `🔥 Picks lock <b>${esc(s.lockNote||`after vote-out #${s.lockAfterBoots}`)}</b> — ${left} more vote-out${left===1?"":"s"} to go. Edit as often as you like until then.`;
+}
+
 function renderAll(){
   applyTheme(MODEL.season.theme);
   document.getElementById("title").innerHTML = MODEL.season.title.replace(/Beware/,'<span class="thin">Beware</span>');
   document.getElementById("seasonline").textContent =
     `${(MODEL.season.show||'').replace('-',' ').toUpperCase()} · EPISODE ${MODEL.season.episode}` + (LIVE?'':' · DEMO');
+  document.getElementById("lockline").innerHTML = lockText(MODEL.season);
+  document.getElementById("btnSubmit").textContent = MODEL.season.locked ? "View my picks" : "Submit / edit my picks";
 
   // wall
   document.getElementById("wall").innerHTML = MODEL.cast.map(c=>{
@@ -431,8 +515,8 @@ function renderAll(){
       if(s.rank===standings.length && standings.length>1) tags.push(`<span class="tag tribal">headed to tribal</span>`);
       if(s.pl.isAI) tags.push(`<span class="tag bot">the algorithm</span>`);
       const pct=s.prob*100;
-      return `<div class="row" data-player="${s.pl.name}"><div class="rk">${s.rank}</div>
-        <div class="who"><div class="top"><span class="nm">${s.pl.name}</span>${tags.join("")}</div>
+      return `<div class="row" data-player="${esc(s.pl.name)}"><div class="rk">${s.rank}</div>
+        <div class="who"><div class="top"><span class="nm">${esc(s.pl.name)}</span>${tags.join("")}</div>
         <div class="probwrap"><span class="bar"><span style="width:0" data-w="${(s.prob/maxProb*100).toFixed(1)}"></span></span>${pct<1?'<1':pct.toFixed(0)}% to win</div></div>
         <div class="score"><div class="val">${s.total>0?'+':''}${s.total}</div><div class="lbl">score</div></div></div>`;
     }).join("");
@@ -440,9 +524,10 @@ function renderAll(){
     document.getElementById("popStandings").textContent =
       `Score = how far each guess lands from reality — lowest wins. Win probabilities come from ${N_SIMS.toLocaleString()} simulated boot orders of the ${unresolved().length} still in the game.`;
     // am i close
-    document.getElementById("picker").innerHTML = MODEL.players.map(p=>`<button class="chip" data-player="${p.name}">${p.name}</button>`).join("");
+    document.getElementById("picker").innerHTML = MODEL.players.map(p=>`<button class="chip" data-player="${esc(p.name)}">${esc(p.name)}</button>`).join("");
     renderDetail(standings[0].pl.name);
   }
+  renderQuestions();
 }
 
 function renderDetail(name){
@@ -477,6 +562,20 @@ function renderDetail(name){
   document.querySelectorAll(".row").forEach(r=>r.classList.toggle("sel",r.dataset.player===name));
 }
 
+function renderQuestions(){
+  const el=document.getElementById("qlist");
+  if(!MODEL.questions.length){ el.innerHTML=`<div class="card">No circumstantial questions this season.</div>`; return; }
+  el.innerHTML=MODEL.questions.map(q=>{
+    const said=v=>MODEL.players.filter(p=>p.answers&&p.answers[q.qId]===v).map(p=>esc(p.name));
+    const side=v=>{const names=said(v), win=q.isTrue===v;
+      return `<div class="qside ${win?'win':q.isTrue?'lose':''}"><div class="qk">${v} · ${names.length}${win?' · −1 each':''}</div>
+        <div class="qnames">${names.length?names.join(", "):"—"}</div></div>`;};
+    return `<div class="qcard"><div class="qhead"><div class="qtext">${esc(q.text)}</div>
+      <span class="qstatus ${q.isTrue?'done':''}">${q.isTrue?'Answer: '+q.isTrue:'open'}</span></div>
+      <div class="qsides">${side("Yes")}${side("No")}</div></div>`;
+  }).join("");
+}
+
 document.addEventListener("click",e=>{const t=e.target.closest(".row[data-player],.chip[data-player]");if(t)renderDetail(t.dataset.player);});
 
 /* ---------- footer + boot ---------- */
@@ -490,6 +589,7 @@ async function boot(){
     `<br>Outwit, outplay, outpick. The tribe has spoken.`;
   wirePanels();
 }
+async function refresh(){ MODEL=await loadModel(); computeStandings(); renderAll(); }
 
 /* =================== SUBMIT & ADMIN PANELS =================== */
 function openOverlay(id){document.getElementById(id).classList.add("show");}
@@ -541,72 +641,215 @@ document.querySelectorAll(".navlink").forEach(btn=>{
 function needLive(){ if(!LIVE){ alert("Connect the backend first: paste your Apps Script URL into API_URL, then redeploy."); return false;} return true; }
 
 function wirePanels(){
-  document.getElementById("btnSubmit").onclick=()=>{ if(!needLive())return; buildSubmit(); openOverlay("submitOverlay"); };
-  document.getElementById("btnAdmin").onclick =()=>{ if(!needLive())return; buildAdmin();  openOverlay("adminOverlay");  };
+  document.getElementById("btnSubmit").onclick=()=>{ buildSubmit(); openOverlay("submitOverlay"); };   // demo can preview
+  document.getElementById("btnAdmin").onclick =()=>{ if(!needLive())return; document.getElementById("aMsg").innerHTML=""; buildAdmin(); openOverlay("adminOverlay"); };
 }
 
 /* ----- submit ----- */
+const tokKey=name=>"sb_token_"+MODEL.season.seasonId+"_"+name;
+
 function buildSubmit(){
-  const nameSel=document.getElementById("sName");
-  nameSel.innerHTML=MODEL.roster.map(n=>`<option>${n}</option>`).join("");
-  const list=document.getElementById("sRanks");
-  list.innerHTML=MODEL.cast.map(c=>`<div class="rankrow"><div class="rn">${c.name}<small>${c.occ||''}</small></div>
-    <input type="number" min="1" max="${MODEL.season.castSize}" data-cid="${c.id}"/></div>`).join("");
-  const qs=document.getElementById("sQuestions");
-  qs.innerHTML=MODEL.questions.map(q=>`<div class="qrow"><div class="qt">${q.text}</div>
-    <div class="yn" data-qid="${q.qId}"><button data-v="Yes">Yes</button><button data-v="No">No</button></div></div>`).join("");
-  document.getElementById("sQwrap").style.display=MODEL.questions.length?"block":"none";
-  list.querySelectorAll("input").forEach(i=>i.addEventListener("input",validateRanks));
-  qs.querySelectorAll(".yn button").forEach(b=>b.onclick=()=>{b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");});
-  document.getElementById("sMsg").innerHTML=""; validateRanks();
+  const s=MODEL.season, nameSel=document.getElementById("sName");
+  nameSel.innerHTML=MODEL.roster.map(r=>`<option value="${esc(r.name)}">${esc(r.name)}${r.submitted?" ✓":""}</option>`).join("");
+  const last=localStorage.getItem("sb_last_name");
+  if(last && MODEL.roster.some(r=>r.name===last)) nameSel.value=last;
+  nameSel.onchange=()=>loadEntry(nameSel.value);
+  document.getElementById("sLock").innerHTML = s.locked
+    ? `<div class="lockbanner locked">🔒 Picks are locked — you can look, but changes won't save.</div>`
+    : `<div class="lockbanner">🔥 ${s.lockAfterBoots?`Picks lock <b>${esc(s.lockNote||`after vote-out #${s.lockAfterBoots}`)}</b>. Until then you can come back and edit from this device.`:`Save now; you can come back and edit from this device.`}</div>`;
+  document.getElementById("sMsg").innerHTML="";
+  loadEntry(nameSel.value);
 }
-function validateRanks(){
-  const inputs=[...document.querySelectorAll("#sRanks input")], N=MODEL.season.castSize;
-  const counts={}; inputs.forEach(i=>{const v=+i.value;if(v)counts[v]=(counts[v]||0)+1;});
-  let filled=0,ok=true;
-  inputs.forEach(i=>{const v=+i.value;const dup=v&&counts[v]>1;i.classList.toggle("dupe",!!dup);if(v)filled++;if(dup||v<1||v>N)ok=false;});
-  ok = ok && filled===N;
-  document.getElementById("sRankMsg").textContent = ok?"✓ valid ranking":`${filled}/${N} ranked${Object.keys(counts).some(k=>counts[k]>1)?" · duplicates in red":""}`;
+
+// Top of the list = first voted out (rank N), bottom = winner (rank 1).
+function loadEntry(name){
+  const mine=MODEL.players.find(p=>p.name===name);
+  const order=mine ? [...MODEL.cast].sort((a,b)=>(mine.ranks[b.id]||0)-(mine.ranks[a.id]||0)) : [...MODEL.cast];
+  document.getElementById("sRanks").innerHTML=order.map(rankRowHTML).join("");
+  renumber();
+
+  const ans=(mine&&mine.answers)||{};
+  document.getElementById("sQuestions").innerHTML=MODEL.questions.map(q=>`<div class="qrow"><div class="qt">${esc(q.text)}</div>
+    <div class="yn" data-qid="${esc(q.qId)}">${["Yes","No"].map(v=>`<button type="button" data-v="${v}" class="${ans[q.qId]===v?'on':''}">${v}</button>`).join("")}</div></div>`).join("");
+  document.getElementById("sQwrap").style.display=MODEL.questions.length?"block":"none";
+  document.querySelectorAll("#sQuestions .yn button").forEach(b=>b.onclick=()=>{
+    b.parentNode.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on"); validateEntry();
+  });
+
+  const other = mine && LIVE && !localStorage.getItem(tokKey(name));
+  document.getElementById("sNameMsg").innerHTML = other
+    ? `<span class="liability">Already submitted from another device.</span> Saving here won't work until the admin resets it — or edit on that device.`
+    : mine ? "Loaded your saved picks." : "";
+  validateEntry();
+}
+
+function rankRowHTML(c){
+  const facts=[c.age,c.home,c.tribe&&`${c.tribe} tribe`].filter(Boolean).join(" · ");
+  return `<li class="rankrow" data-cid="${c.id}">
+    <button type="button" class="handle" aria-label="Move ${esc(c.name)} (arrow keys)">⠿</button>
+    <span class="place"></span>
+    <button type="button" class="rn" aria-expanded="false"><span class="rname">${esc(c.name)}</span>
+      <small>${esc(c.occ||"")}${c.actual!==null?` · <b class="outtag">out ${ord(c.actual)}</b>`:""}</small></button>
+    <div class="bio">${facts?`<div class="facts">${esc(facts)}</div>`:""}${esc(c.bio||"No profile yet.")}</div>
+  </li>`;
+}
+function renumber(){
+  const rows=[...document.querySelectorAll("#sRanks .rankrow")], N=rows.length;
+  rows.forEach((r,i)=>{ const p=N-i, el=r.querySelector(".place");
+    el.textContent=p===1?"👑 1st":ord(p); el.classList.toggle("crown",p===1); r.classList.toggle("firstout",i===0); });
+}
+function validateEntry(){
+  const groups=[...document.querySelectorAll("#sQuestions .yn")];
+  const left=groups.filter(g=>!g.querySelector(".on")).length;
+  document.getElementById("sQMsg").textContent = groups.length ? (left?`${left} of ${groups.length} still need an answer`:"✓ all answered") : "";
+  const ok=!left && !MODEL.season.locked;
   document.getElementById("sSave").disabled=!ok;
   return ok;
 }
+
+document.getElementById("sRanks").addEventListener("click",e=>{
+  const b=e.target.closest(".rn"); if(!b) return;
+  const open=b.closest(".rankrow").classList.toggle("open"); b.setAttribute("aria-expanded",open);
+});
+
+/* ----- drag to reorder: pointer (mouse + touch) on the handle, or ↑/↓ with the handle focused ----- */
+(function wireDrag(){
+  const list=document.getElementById("sRanks");
+  let drag=null, raf=0;
+  function moveTo(y){
+    const before=[...list.children].find(r=>{ if(r===drag.row) return false; const b=r.getBoundingClientRect(); return y<b.top+b.height/2; })||null;
+    if(before!==drag.row.nextElementSibling){ list.insertBefore(drag.row,before); renumber(); }
+  }
+  function tick(){   // scroll the list while the pointer sits near its top or bottom edge
+    if(!drag) return;
+    const b=list.getBoundingClientRect(), edge=44;
+    const dy = drag.y<b.top+edge ? -Math.ceil((b.top+edge-drag.y)/5) : drag.y>b.bottom-edge ? Math.ceil((drag.y-b.bottom+edge)/5) : 0;
+    if(dy){ list.scrollTop+=dy; moveTo(drag.y); }
+    raf=requestAnimationFrame(tick);
+  }
+  list.addEventListener("pointerdown",e=>{
+    const h=e.target.closest(".handle"); if(!h||e.button>0) return;
+    e.preventDefault();
+    drag={row:h.closest(".rankrow"),y:e.clientY,id:e.pointerId};
+    drag.row.classList.add("dragging"); list.classList.add("sorting");
+    raf=requestAnimationFrame(tick);
+  });
+  // on document, not the list: moving the row in the DOM drops pointer capture
+  document.addEventListener("pointermove",e=>{ if(!drag||e.pointerId!==drag.id) return; drag.y=e.clientY; moveTo(e.clientY); });
+  const end=e=>{ if(!drag||e.pointerId!==drag.id) return;
+    drag.row.classList.remove("dragging"); list.classList.remove("sorting"); drag=null; cancelAnimationFrame(raf); };
+  document.addEventListener("pointerup",end); document.addEventListener("pointercancel",end);
+  list.addEventListener("keydown",e=>{
+    const h=e.target.closest(".handle"); if(!h) return;
+    const row=h.closest(".rankrow");
+    if(e.key==="ArrowUp"&&row.previousElementSibling) list.insertBefore(row,row.previousElementSibling);
+    else if(e.key==="ArrowDown"&&row.nextElementSibling) list.insertBefore(row.nextElementSibling,row);
+    else return;
+    e.preventDefault(); h.focus(); row.scrollIntoView({block:"nearest"}); renumber();
+  });
+})();
+
 document.getElementById("sSave").onclick=async()=>{
-  if(!validateRanks())return;
-  const name=document.getElementById("sName").value;
-  const ranks={}; document.querySelectorAll("#sRanks input").forEach(i=>ranks[i.dataset.cid]=+i.value);
+  if(!validateEntry())return;
+  const name=document.getElementById("sName").value, msg=document.getElementById("sMsg");
+  const rows=[...document.querySelectorAll("#sRanks .rankrow")], ranks={};
+  rows.forEach((r,i)=>ranks[r.dataset.cid]=rows.length-i);
   const answers={}; document.querySelectorAll("#sQuestions .yn").forEach(g=>{const on=g.querySelector(".on");if(on)answers[g.dataset.qid]=on.dataset.v;});
-  const tokKey="sb_token_"+MODEL.season.seasonId+"_"+name;
-  const msg=document.getElementById("sMsg"); msg.innerHTML=`<div class="msg">Saving…</div>`;
-  const res=await api({action:"submitEntry",name,token:localStorage.getItem(tokKey)||"",ranks,answers});
-  if(res.ok){ if(res.token) localStorage.setItem(tokKey,res.token);
+  if(!LIVE){ msg.innerHTML=`<div class="msg">Demo mode — nothing was saved. Paste the Apps Script URL into <b>API_URL</b> to go live.</div>`; return; }
+  msg.innerHTML=`<div class="msg">Saving…</div>`;
+  const res=await api({action:"submitEntry",name,token:localStorage.getItem(tokKey(name))||"",ranks,answers});
+  if(res.ok){ if(res.token) localStorage.setItem(tokKey(name),res.token);
+    localStorage.setItem("sb_last_name",name);
     msg.innerHTML=`<div class="msg ok">Saved! Standings will refresh.</div>`;
-    setTimeout(async()=>{closeOverlay(document.getElementById("submitOverlay"));MODEL=await loadModel();computeStandings();renderAll();},900);
-  } else msg.innerHTML=`<div class="msg err">${res.error}</div>`;
+    setTimeout(async()=>{closeOverlay(document.getElementById("submitOverlay"));await refresh();},900);
+  } else msg.innerHTML=`<div class="msg err">${esc(res.error)}</div>`;
 };
 
 /* ----- admin ----- */
 function buildAdmin(){
+  const s=MODEL.season, N=s.castSize;
   const p=localStorage.getItem("sb_admin_pass")||""; document.getElementById("aPass").value=p;
   document.getElementById("aPass").oninput=e=>localStorage.setItem("sb_admin_pass",e.target.value);
-  document.getElementById("aEvictWho").innerHTML=MODEL.cast.filter(c=>c.actual===null).map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+
+  document.getElementById("aEvictWho").innerHTML=MODEL.cast.filter(c=>c.actual===null).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");
   document.getElementById("aEvictPlace").value=remainingPlaces().length?Math.max(...remainingPlaces()):"";
-  document.getElementById("aQ").innerHTML=MODEL.questions.map(q=>`<option value="${q.qId}">${q.text} ${q.isTrue?'· ['+q.isTrue+']':''}</option>`).join("");
-  document.getElementById("aRemove").innerHTML=MODEL.roster.map(n=>`<option>${n}</option>`).join("");
-  document.getElementById("aEp").value=MODEL.season.episode;
-  document.getElementById("aMsg").innerHTML="";
+
+  const out=resolved().sort((a,b)=>b.actual-a.actual);
+  document.getElementById("aBoots").innerHTML = out.length ? out.map(c=>`<div class="bootrow" data-cid="${c.id}">
+      <span class="bname">${esc(c.name)}</span>
+      <input type="number" min="1" max="${N}" value="${c.actual}" aria-label="Placement for ${esc(c.name)}"/>
+      <button class="btn" data-act="save">Save</button><button class="btn ghost" data-act="undo">Undo</button></div>`).join("")
+    : `<div class="hint tight">Nobody voted out yet.</div>`;
+
+  document.getElementById("aWikiHint").innerHTML = s.wikiTitle
+    ? `Reads the contestants table on Wikipedia's <b>${esc(s.wikiTitle)}</b> page and shows what it would record. Nothing saves until you press Apply, and it never overwrites a placement you entered. Heads-up: Wikipedia is often updated during the East Coast airing.`
+    : `No Wikipedia page is set for this season (<b>wikiTitle</b> in season.js).`;
+  document.getElementById("aWikiCheck").disabled=!s.wikiTitle;
+  document.getElementById("aWiki").innerHTML="";
+
+  document.getElementById("aLockMode").value=s.lockMode||"auto";
+  document.getElementById("aLockState").innerHTML =
+    `Right now: <b>${s.locked?"locked":"open"}</b>.` +
+    (s.lockAfterBoots?` Automatic locks ${esc(s.lockNote||"")} — ${s.bootsSoFar} of ${s.lockAfterBoots} vote-outs so far.`:` No automatic lock is set for this season.`);
+
+  document.getElementById("aQ").innerHTML=MODEL.questions.map(q=>`<option value="${esc(q.qId)}">${esc(q.text)} ${q.isTrue?'· ['+q.isTrue+']':''}</option>`).join("");
+
+  const done=MODEL.roster.filter(r=>r.submitted).length;
+  document.getElementById("aRosterSum").textContent=`${done} of ${MODEL.roster.length} have submitted picks.`;
+  document.getElementById("aRoster").innerHTML=MODEL.roster.map(r=>`<div class="rosterrow" data-name="${esc(r.name)}">
+      <span class="rname">${esc(r.name)}</span><span class="rstat ${r.submitted?'yes':'no'}">${r.submitted?'✓ picks in':'no picks yet'}</span>
+      <button class="btn ghost" data-act="reset" title="Let them save their picks from a new device">Reset</button>
+      <button class="btn ghost" data-act="remove">Remove</button></div>`).join("");
+
+  document.getElementById("aEp").value=s.episode;
 }
 function pass(){return document.getElementById("aPass").value;}
-async function adminCall(payload,label){
+async function adminCall(payload,label,okText){
   const msg=document.getElementById("aMsg"); msg.innerHTML=`<div class="msg">${label}…</div>`;
   const res=await api(Object.assign({pass:pass()},payload));
-  if(res.ok){ msg.innerHTML=`<div class="msg ok">Done.</div>`; MODEL=await loadModel(); computeStandings(); renderAll(); buildAdmin(); }
-  else msg.innerHTML=`<div class="msg err">${res.error}</div>`;
+  if(res.ok){ msg.innerHTML=`<div class="msg ok">${okText?okText(res):"Done."}</div>`; await refresh(); buildAdmin(); }
+  else msg.innerHTML=`<div class="msg err">${esc(res.error)}</div>`;
+  return res;
 }
 document.getElementById("aEvict").onclick=()=>adminCall({action:"enterEviction",castId:+document.getElementById("aEvictWho").value,placement:+document.getElementById("aEvictPlace").value},"Recording");
+document.getElementById("aBoots").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"), row=b&&b.closest(".bootrow"); if(!row) return;
+  const castId=+row.dataset.cid;
+  if(b.dataset.act==="undo") adminCall({action:"undoEviction",castId},"Undoing");
+  else { const inp=row.querySelector("input"), was=inp.defaultValue;   // snap back if the server says no
+    adminCall({action:"enterEviction",castId,placement:+inp.value},"Saving").then(r=>{ if(!r.ok) inp.value=was; }); }
+});
+document.getElementById("aLockBtn").onclick=()=>adminCall({action:"setLockMode",mode:document.getElementById("aLockMode").value},"Updating");
 document.querySelectorAll('#adminOverlay [data-q]').forEach(b=>b.onclick=()=>adminCall({action:"resolveQuestion",qId:document.getElementById("aQ").value,isTrue:b.dataset.q},"Resolving"));
-document.getElementById("aAdd").onclick=()=>{const n=document.getElementById("aAddName").value.trim();if(n)adminCall({action:"addPlayer",name:n},"Adding");};
-document.getElementById("aRemoveBtn").onclick=()=>{const n=document.getElementById("aRemove").value;if(confirm("Remove "+n+" and their picks?"))adminCall({action:"removePlayer",name:n},"Removing");};
+document.getElementById("aAdd").onclick=()=>{const n=document.getElementById("aAddName").value.trim();if(n)adminCall({action:"addPlayer",name:n},"Adding").then(r=>{if(r.ok)document.getElementById("aAddName").value="";});};
+document.getElementById("aRoster").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"), row=b&&b.closest(".rosterrow"); if(!row) return;
+  const name=row.dataset.name;
+  if(b.dataset.act==="reset"){ if(confirm(`Let ${name} save from a new device? Their current picks stay until they re-save.`)) adminCall({action:"resetToken",name},"Resetting",()=>`${esc(name)} can now save from any device (the first save claims it).`); }
+  else if(confirm(`Remove ${name} and their picks?`)) adminCall({action:"removePlayer",name},"Removing");
+});
 document.getElementById("aEpBtn").onclick=()=>adminCall({action:"setEpisode",episode:+document.getElementById("aEp").value},"Updating");
+
+// Wikipedia: check shows a preview; Apply writes only the "new" rows (server re-checks everything)
+document.getElementById("aWikiCheck").onclick=async()=>{
+  const box=document.getElementById("aWiki"), msg=document.getElementById("aMsg");
+  msg.innerHTML=`<div class="msg">Checking Wikipedia…</div>`; box.innerHTML="";
+  const res=await api({pass:pass(),action:"checkWikipedia"});
+  if(!res.ok){ msg.innerHTML=`<div class="msg err">${esc(res.error)}</div>`; return; }
+  msg.innerHTML="";
+  const label={new:"will record",same:"already in",conflict:"differs"};
+  const fresh=res.rows.filter(r=>r.status==="new").length;
+  box.innerHTML =
+    (res.rows.length ? res.rows.map(r=>`<div class="wikirow"><b>${ord(r.placement)}</b><span>${esc(r.name)} <small class="muted">· ${esc(r.finish)}</small>
+        ${r.status==="conflict"?`<br><small class="liability">${r.current!==null?`you have ${ord(r.current)}`:esc(r.note)}</small>`:""}</span>
+        <span class="wst ${r.status}">${label[r.status]}</span></div>`).join("")
+      : `<div class="hint tight">Wikipedia doesn't list anyone as out yet.</div>`) +
+    (res.unmatched.length?`<div class="hint">Couldn't match: ${res.unmatched.map(esc).join(", ")} — record by hand.</div>`:"") +
+    (!res.inOrder?`<div class="hint liability">The table isn't in boot order right now (mid-edit?). Try again later or record by hand.</div>`:"") +
+    (fresh&&res.inOrder?`<div class="rowbtns"><button class="btn primary" id="aWikiApply">Apply ${fresh} new</button></div>`:"");
+  const apply=document.getElementById("aWikiApply");
+  if(apply) apply.onclick=()=>adminCall({action:"applyWikipedia"},"Applying",r=>`Recorded ${r.applied} from Wikipedia.`);
+};
 
 boot();
 </script>

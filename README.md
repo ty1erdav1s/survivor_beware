@@ -10,8 +10,10 @@ Built on the same infrastructure and scoring as
 (The Veto Royale), reskinned for Survivor.
 
 - **`index.html`** — the site. Deploy to GitHub Pages.
-- **`apps-script/Code.gs`** — paste into Google Apps Script, run `setup()` once.
-- **`SETUP.md`** — full deploy guide (Sheet + Apps Script + Pages).
+- **`season.js`** — this season's cast, profiles, questions and lock rule. The only file that changes each season; also pasted into Apps Script as `Season`.
+- **`apps-script/Code.gs`** — the backend. Paste into Google Apps Script, run `setup()`.
+- **`dev/local.html`** — local sandbox that runs the real backend against a fake sheet in your browser.
+- **`SETUP.md`** — deploy guide plus the start-of-season and during-season checklists.
 
 Leave `API_URL` empty in `index.html` to preview on built-in demo data;
 paste your Apps Script `/exec` URL to go live.
