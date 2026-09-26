@@ -24,6 +24,9 @@
  * photos        cast[].photo is a file name; the site shows base + photo + card
  *               on the wall and base + photo + large in the profile.
  * sources       cast[].refs point at these keys; shown under each bio.
+ * airs          when episodes air, for the "Next Tribal" countdown: weekday
+ *               (0 = Sunday … 3 = Wednesday), time and tz in the show's time zone,
+ *               minutes = running time. skip: ['YYYY-MM-DD', …] for off weeks.
  * These display fields are read straight from this file by the site, so
  * updating a bio, photo or source only needs a push — no Apps Script redeploy.
  *
@@ -40,6 +43,7 @@ var SEASON = {
   lockNote: 'after Episode 2',
   wikiTitle: 'Survivor 51',
   wikiOrder: 'firstOutFirst',
+  airs: { weekday:3, time:'20:00', tz:'America/New_York', minutes:90, skip:[] },
 
   tribes: {
     Toka: { color:'#f0c625', text:'#1a1300' },

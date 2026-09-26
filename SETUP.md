@@ -63,6 +63,18 @@ Ask Claude for a new `season.js` (new `seasonId`, e.g. `s52`), paste it into the
 
 ---
 
+## Fun stuff
+
+All of this runs in the browser. Nothing is stored in the sheet, and none of it affects scores.
+
+- **Jeff-isms** — a random one under the title (tap it for another), plus themed lines when saving, on errors, when picks lock, and in the footer. They're original puns on his catchphrases and are labelled "Jeff-ism". The lines live in `SKINS.survivor.fun` in `index.html`.
+- **Tribal reveal** — the first time each device opens the site after a vote-out, a parchment card shows who went home, how it changed that person's score, and where they stand now. Each vote-out is shown once per device. New visitors don't get old ones replayed, and admins don't see the ones they recorded themselves.
+- **Hidden immunity idol** — a small carved idol hides somewhere different each week (the same spot for everyone). Tapping it gives a reveal and confetti.
+- **Next Tribal countdown** — this uses `airs` in `season.js` (Wednesdays 8pm ET, 90 minutes), and it's correct in every time zone and across daylight-saving changes. **If an episode is skipped** (holidays, sports), add the date to `airs.skip`, e.g. `skip: ['2026-11-25']`, then push; no redeploy needed.
+- **Standings flair** — ▲/▼ shows how many places each player moved since the last vote-out, the leader wears the immunity necklace, and there are "On fire" and "Blindside of the week" badges for moves of 2+ places.
+
+---
+
 ## Local sandbox (no Google needed)
 
 `dev/local.html` runs the site against the **real `Code.gs`** with a fake spreadsheet in your browser — handy for trying changes before redeploying.
