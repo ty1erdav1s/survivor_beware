@@ -122,7 +122,7 @@ section{margin-top:30px}
 .eyebrow{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
-.hg{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,var(--surface-2),var(--surface));border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;transition:transform .25s ease,box-shadow .25s ease,filter .4s ease}
+.hg{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,var(--surface-2),var(--surface));border:1px solid var(--line);border-bottom:3px solid var(--tribe,var(--line));cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;transition:transform .25s ease,box-shadow .25s ease,filter .4s ease}
 .hg .mono{font-family:var(--font-display);font-weight:600;font-size:1.9rem;letter-spacing:.04em;color:var(--accent);text-shadow:0 0 14px var(--accent-dim);line-height:1}
 .hg .nm{font-size:.72rem;font-weight:600;margin-top:8px;line-height:1.15}
 .hg .occ{font-size:.6rem;color:var(--muted);margin-top:2px}
@@ -133,6 +133,37 @@ section{margin-top:30px}
 .hg.out .mono{color:var(--muted);text-shadow:none}
 .hg .placard{position:absolute;top:0;left:0;right:0;background:repeating-linear-gradient(90deg,#c9a24a 0 11px,#9c7a30 11px 13px);color:#1f1606;font-family:var(--font-display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.62rem;padding:3px 0}
 .hg .place{position:absolute;bottom:6px;font-family:var(--font-mono);font-size:.66rem;color:#fff;background:rgba(0,0,0,.45);padding:1px 7px;border-radius:100px}
+.hg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* headshots: photo fills the card, name sits on a dark fade at the bottom */
+.hg .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.hg.has-photo{justify-content:flex-end;padding:0}
+.hg.has-photo .mono{display:none}
+.hg .cap{position:relative;width:100%}
+.hg.has-photo .cap{padding:22px 6px 7px;background:linear-gradient(transparent,rgba(0,0,0,.88) 50%)}
+.hg.has-photo .nm{color:#fff;margin-top:0}
+.hg.has-photo .occ{color:rgba(255,255,255,.75)}
+.hg.has-photo .place{top:24px;bottom:auto;right:6px}
+/* tribes: one panel per tribe, one merged panel after the merge */
+.tribes{display:flex;flex-wrap:wrap;gap:14px}
+.tribe{flex:1 1 300px;min-width:0;border:1px solid var(--line);border-top:4px solid var(--tribe,var(--line));border-radius:14px;padding:10px;background:linear-gradient(180deg,color-mix(in srgb,var(--tribe,transparent) 14%,transparent),transparent 140px)}
+.tribe.muted{flex-basis:100%}
+.tribe-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.tribe-name{display:inline-block;font-family:var(--font-display);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem;padding:3px 10px;border-radius:100px;background:var(--tribe,var(--surface-2));color:var(--tribe-text,var(--text))}
+.tribe.muted .tribe-name{background:none;color:var(--muted);padding-left:0}
+.tribe-count{font-family:var(--font-mono);font-size:.66rem;color:var(--muted)}
+.tribe .wall{grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+/* profile view */
+.panel.profile{max-width:480px}
+.p-photo{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;object-position:50% 22%;border-radius:12px;margin-bottom:14px;background:var(--bg-2)}
+.p-tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-6px 0 12px}
+.p-tags .arrow{color:var(--muted);font-size:.8rem}
+.p-status{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid var(--line);color:var(--good)}
+.p-status.out{color:var(--danger)}
+.p-bio{font-size:.9rem;line-height:1.55}
+.p-credit{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);margin-top:10px}
+.refs{font-size:.72rem;color:var(--muted);margin-top:8px;line-height:1.6}
+.refs a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-dim)}
+.refs a:hover{border-bottom-color:var(--accent)}
 .board{display:flex;flex-direction:column;gap:8px}
 .row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px;cursor:pointer;transition:border-color .2s,background .2s}
 .row:hover{border-color:var(--accent-dim);background:var(--surface-2)}
@@ -194,7 +225,9 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 .rankrow .place{font-family:var(--font-display);font-weight:700;font-size:.92rem;color:var(--muted);text-align:center;white-space:nowrap}
 .rankrow .place.crown{color:var(--gold)}
 .rankrow.firstout .place{color:var(--danger)}
-.rankrow .rn{background:none;border:none;color:var(--text);text-align:left;cursor:pointer;padding:4px 2px;font-family:var(--font-body);min-width:0}
+.rankrow .rn{display:flex;align-items:center;gap:9px;background:none;border:none;color:var(--text);text-align:left;cursor:pointer;padding:4px 2px;font-family:var(--font-body);min-width:0}
+.rankrow .av{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 22%;flex:0 0 auto;border:2px solid var(--tribe,var(--line));background:var(--surface)}
+.rankrow .rtxt{min-width:0}
 .rankrow .rname{font-size:.92rem;font-weight:600}
 .rankrow .rn small{display:block;color:var(--muted);font-size:.7rem}
 .rankrow .outtag{color:var(--danger);font-weight:600}
@@ -342,6 +375,14 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
   </main>
 </div>
 
+<!-- PROFILE -->
+<div class="overlay" id="profileOverlay">
+  <div class="panel profile">
+    <div id="pBody"></div>
+    <div class="rowbtns"><button class="btn ghost" data-close>Close</button></div>
+  </div>
+</div>
+
 <!-- SUBMIT PANEL -->
 <div class="overlay" id="submitOverlay">
   <div class="panel">
@@ -485,15 +526,104 @@ async function api(payload){
   return r.json();
 }
 async function loadModel(){
-  if(!LIVE) return demoModel();
+  if(!LIVE) return withProfiles(demoModel());
   const r = await fetch(API_URL+"?action=getSeason");
   const j = await r.json();
   if(!j.ok) throw new Error(j.error||"load failed");
   const d = j.data;
-  return {season:d.season, cast:d.cast, questions:d.questions,
+  return withProfiles({season:d.season, cast:d.cast, questions:d.questions,
     players:d.players.filter(p=>p.submitted).map(p=>({name:p.name,isAI:p.isAI,bonus:p.bonus,ranks:p.ranks,answers:p.answers||{}})),
-    roster:d.players.map(p=>({name:p.name,submitted:p.submitted}))};
+    roster:d.players.map(p=>({name:p.name,submitted:p.submitted}))});
 }
+
+/* ---------- profiles: photos, bios and sources come straight from season.js ---------- */
+// So updating a bio or photo only needs a push, never an Apps Script redeploy.
+// The sheet just has to agree on castId (and on seasonId, checked here).
+function withProfiles(m){
+  const S=window.SEASON;
+  if(!S || S.seasonId!==m.season.seasonId) return m;
+  const byId={}; S.cast.forEach(c=>byId[c.id]=c);
+  m.cast=m.cast.map(c=>{ const p=byId[c.id]||{};
+    return Object.assign({},c,{age:c.age||p.age||null, home:c.home||p.home||"", occ:c.occ||p.occ||"",
+      tribe:c.tribe||p.tribe||"", bio:p.bio||c.bio||"", photo:p.photo||"", refs:p.refs||[]}); });
+  return m;
+}
+function photoUrl(c,size){ const P=window.SEASON&&SEASON.photos; return c.photo&&P ? P.base+c.photo+(P[size]||"") : ""; }
+function sourcesHTML(c){
+  const S=(window.SEASON&&SEASON.sources)||{};
+  const links=(c.refs||[]).filter(k=>S[k]).map(k=>`<a href="${esc(S[k].url)}" target="_blank" rel="noopener">${esc(S[k].label)}</a>`);
+  return links.length?`<div class="refs">Sources: ${links.join(" · ")}</div>`:"";
+}
+
+/* ---------- tribes: live split (swaps, merge) from the Wikipedia contestants table ---------- */
+// TRIBES.byId[castId] = the tribes they've been on, in order: [{label:"Original",name,color,text}, …].
+// Starts from season.js (or the last Wikipedia read cached on this device) so the wall
+// renders grouped straight away, then refreshes from Wikipedia at most every 30 minutes.
+let TRIBES=null;
+const tribeKey=()=>T.store+"tribes_"+(window.SEASON&&SEASON.seasonId);
+function tribesFromSeason(){
+  const S=window.SEASON; if(!S || !S.cast.some(c=>c.tribe)) return null;   // e.g. Big Brother: no tribes
+  const out={merged:false,byId:{}};
+  S.cast.forEach(c=>{ const t=(S.tribes||{})[c.tribe]||{}; if(c.tribe) out.byId[c.id]=[{label:"Original",name:c.tribe,color:t.color||"",text:t.text||""}]; });
+  return out;
+}
+function initialTribes(){
+  const base=tribesFromSeason(); if(!base) return null;
+  try{ const c=JSON.parse(localStorage.getItem(tribeKey())||"null"); if(c&&c.data) return c.data; }catch(_){}
+  return base;
+}
+async function refreshTribes(){
+  const S=window.SEASON; if(!S || !S.wikiTitle || !tribesFromSeason()) return;
+  try{ const c=JSON.parse(localStorage.getItem(tribeKey())||"null"); if(c&&Date.now()-c.at<30*60e3) return; }catch(_){}
+  try{
+    const j=await fetch("https://en.wikipedia.org/w/api.php?action=parse&prop=text&formatversion=2&format=json&origin=*&page="+encodeURIComponent(S.wikiTitle)).then(r=>r.json());
+    const data=parseTribes(j.parse.text);
+    if(!data) return;
+    TRIBES=data; renderWall();
+    try{ localStorage.setItem(tribeKey(),JSON.stringify({at:Date.now(),data})); }catch(_){}
+  }catch(_){ /* offline or Wikipedia down: keep what we have */ }
+}
+// Tribe columns sit under the "Tribe" header (Original / Switched / Merged); cells carry the tribe colours.
+function parseTribes(html){
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  const t=[...doc.querySelectorAll("table.wikitable")].find(x=>/contestants|castaways/i.test((x.querySelector("caption")||{}).textContent||""));
+  if(!t) return null;
+  t.querySelectorAll("sup").forEach(x=>x.remove());   // footnote markers like "[a]"
+  const grid=[];                                 // expand rowspan/colspan into a plain grid
+  [...t.rows].forEach((tr,r)=>{ grid[r]=grid[r]||[]; let c=0;
+    [...tr.cells].forEach(td=>{ while(grid[r][c]) c++;
+      for(let i=0;i<Math.max(td.rowSpan,1);i++) for(let k=0;k<td.colSpan;k++) (grid[r+i]=grid[r+i]||[])[c+k]=td;
+      c+=td.colSpan; }); });
+  const head=[]; for(const row of grid){ if(row.length&&row.every(td=>td&&td.tagName==="TH")) head.push(row); else break; }
+  if(!head.length) return null;
+  const cols=[]; head[0].forEach((td,c)=>{ if(/tribe/i.test(td.textContent)) cols.push({c,label:head[head.length-1][c].textContent.trim()}); });
+  if(!cols.length) return null;
+  const out={merged:false,byId:{}};
+  grid.slice(head.length).forEach(row=>{
+    const nameCell=row[0]; if(!nameCell) return;
+    nameCell.querySelectorAll("br").forEach(b=>b.replaceWith("\n"));   // "Name<br>Previous season" → first line only
+    const c=matchCastName(nameCell.textContent.split("\n")[0]); if(!c) return;
+    out.byId[c.id]=cols.map(({c:col,label})=>{ const td=row[col], name=td?td.textContent.trim():"";
+      if(!name || /^none$/i.test(name)) return null;   // newer seasons have a tribeless "None" phase
+      if(/merge/i.test(label)) out.merged=true;
+      return {label,name,color:td.style.backgroundColor||"",text:td.style.color||""}; }).filter(Boolean);
+  });
+  return Object.keys(out.byId).length?out:null;
+}
+function matchCastName(txt){
+  const norm=s=>String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/["'“”‘’]/g,"").toLowerCase().trim();
+  const w=norm(txt).split(/\s+/).filter(Boolean); if(!w.length) return null;
+  const hits=MODEL.cast.filter(c=>norm(c.name).split(/\s+/).pop()===w[w.length-1]);
+  return hits.length===1 ? hits[0] : hits.find(c=>w.includes(norm(c.name).split(/\s+/)[0]))||null;
+}
+const tribesOf=c=>(TRIBES&&TRIBES.byId[c.id])||[];
+// Wikipedia only sets a text colour on dark tribe cells, so pick dark or light text by brightness.
+function readableOn(color){
+  const m=String(color).match(/^#([0-9a-f]{6})$/i), n=m?[0,2,4].map(i=>parseInt(m[1].substr(i,2),16)):(String(color).match(/\d+/g)||[]).map(Number);
+  if(n.length<3) return "#fff";
+  return (0.299*n[0]+0.587*n[1]+0.114*n[2])>150 ? "#1a1300" : "#fff";
+}
+const tribeStyle=t=>t&&t.color?` style="--tribe:${esc(t.color)};--tribe-text:${esc(t.text||readableOn(t.color))}"`:"";
 
 /* ---------- theming from data ---------- */
 function applyTheme(t){
@@ -560,13 +690,7 @@ function renderAll(){
   document.getElementById("lockline").innerHTML = lockText(MODEL.season);
   document.getElementById("btnSubmit").textContent = MODEL.season.locked ? "View my picks" : "Submit / edit my picks";
 
-  // wall
-  document.getElementById("wall").innerHTML = MODEL.cast.map(c=>{
-    const out=c.actual!==null;
-    return `<div class="hg ${out?'out':'in'}">${out?`<div class="placard">${T.outCard}</div>`:`<div class="lit"></div>`}<div class="glow"></div>
-      <div class="mono">${initials(c.name)}</div><div class="nm">${c.name}</div><div class="occ">${c.occ||''}</div>
-      ${out?`<div class="place">${ord(c.actual)}</div>`:``}</div>`;
-  }).join("");
+  renderWall();
 
   // standings
   if(standings.length===0){
@@ -594,6 +718,55 @@ function renderAll(){
   }
   renderQuestions();
 }
+
+// Card border = the tribe they started on; photo if season.js has one, initials otherwise.
+function wallCard(c){
+  const out=c.actual!==null, ph=photoUrl(c,"card"), first=tribesOf(c)[0];
+  return `<div class="hg ${out?'out':'in'}${ph?' has-photo':''}" data-cid="${c.id}" role="button" tabindex="0" aria-label="${esc(c.name)} — profile"${tribeStyle(first)}>
+    ${ph?`<img class="ph" src="${esc(ph)}" alt="" loading="lazy" onerror="this.parentNode.classList.remove('has-photo');this.remove()">`:""}
+    ${out?`<div class="placard">${T.outCard}</div>`:`<div class="lit"></div>`}<div class="glow"></div>
+    <div class="mono">${initials(c.name)}</div><div class="cap"><div class="nm">${esc(c.name)}</div><div class="occ">${esc(c.occ||'')}</div></div>
+    ${out?`<div class="place">${ord(c.actual)}</div>`:``}</div>`;
+}
+// Before the merge: one panel per current tribe. After: the merged tribe, plus everyone out before it.
+function renderWall(){
+  const el=document.getElementById("wall");
+  if(!TRIBES){ el.className="wall"; el.innerHTML=MODEL.cast.map(wallCard).join(""); return; }
+  const now=c=>tribesOf(c).slice(-1)[0];
+  const sorted=list=>[...list].sort((a,b)=>(a.actual!==null)-(b.actual!==null) || (a.actual||0)-(b.actual||0) || a.name.localeCompare(b.name));
+  let groups;
+  if(TRIBES.merged){
+    const merged=MODEL.cast.filter(c=>now(c)&&/merge/i.test(now(c).label)), t=merged.length?now(merged[0]):null;
+    groups=[{name:t?t.name:"Merged",t,cast:merged},
+            {name:T.out[0].toUpperCase()+T.out.slice(1)+" before the merge",cast:MODEL.cast.filter(c=>!merged.includes(c)),muted:true}];
+  } else {
+    const names=[...new Set(MODEL.cast.map(c=>now(c)&&now(c).name).filter(Boolean))];
+    groups=names.map(n=>{ const cast=MODEL.cast.filter(c=>now(c)&&now(c).name===n); return {name:n,t:now(cast[0]),cast}; });
+    const loose=MODEL.cast.filter(c=>!now(c)); if(loose.length) groups.push({name:"No tribe",cast:loose,muted:true});
+  }
+  el.className="tribes";
+  el.innerHTML=groups.filter(g=>g.cast.length).map(g=>{ const left=g.cast.filter(c=>c.actual===null).length;
+    return `<div class="tribe${g.muted?' muted':''}"${tribeStyle(g.t)}>
+      <div class="tribe-head"><span class="tribe-name">${esc(g.name)}</span><span class="tribe-count">${g.muted?g.cast.length:`${left} left`}</span></div>
+      <div class="wall">${sorted(g.cast).map(wallCard).join("")}</div></div>`; }).join("");
+}
+
+function openProfile(id){
+  const c=MODEL.cast.find(x=>x.id===+id); if(!c) return;
+  const ph=photoUrl(c,"large"), credit=window.SEASON&&SEASON.photos&&SEASON.photos.credit;
+  const facts=[c.age,c.home,c.occ].filter(Boolean).join(" · ");
+  document.getElementById("pBody").innerHTML=`
+    ${ph?`<img class="p-photo" src="${esc(ph)}" alt="${esc(c.name)}" onerror="this.remove()">`:""}
+    <h2>${esc(c.name)}</h2><div class="desc">${esc(facts)}</div>
+    <div class="p-tags">${tribesOf(c).map(t=>`<span class="tribe-name"${tribeStyle(t)}>${esc(t.name)}</span>`).join('<span class="arrow">→</span>')}
+      <span class="p-status ${c.actual===null?'':'out'}">${c.actual===null?'Still in the game':`${esc(T.outCard)} · ${ord(c.actual)}`}</span></div>
+    <p class="p-bio">${esc(c.bio||"No profile yet.")}</p>${sourcesHTML(c)}
+    ${ph&&credit?`<div class="p-credit">${esc(credit)}</div>`:""}`;
+  openOverlay("profileOverlay");
+}
+document.getElementById("wall").addEventListener("click",e=>{ const h=e.target.closest(".hg[data-cid]"); if(h) openProfile(h.dataset.cid); });
+document.getElementById("wall").addEventListener("keydown",e=>{ const h=e.target.closest(".hg[data-cid]");
+  if(h&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); openProfile(h.dataset.cid); } });
 
 function renderDetail(name){
   const s=standings.find(x=>x.pl.name===name); if(!s) return;
@@ -646,7 +819,9 @@ document.addEventListener("click",e=>{const t=e.target.closest(".row[data-player
 /* ---------- footer + boot ---------- */
 async function boot(){
   try{ MODEL=await loadModel(); }catch(err){ document.getElementById("seasonline").textContent="LOAD ERROR: "+err.message; return; }
+  TRIBES=initialTribes();
   computeStandings(); renderAll();
+  refreshTribes();
   document.getElementById("footer").innerHTML =
     `${T.brand.toUpperCase()} · a fan prediction pool · lower score wins<br>`+
     (LIVE?`Live from your season sheet · players submit, standings update automatically.`
@@ -749,13 +924,14 @@ function loadEntry(name){
 }
 
 function rankRowHTML(c){
-  const facts=[c.age,c.home,c.tribe&&`${c.tribe} tribe`].filter(Boolean).join(" · ");
-  return `<li class="rankrow" data-cid="${c.id}">
+  const tr=tribesOf(c).slice(-1)[0], ph=photoUrl(c,"card");
+  const facts=[c.age,c.home,(tr&&tr.name||c.tribe)&&`${tr&&tr.name||c.tribe} tribe`].filter(Boolean).join(" · ");
+  return `<li class="rankrow" data-cid="${c.id}"${tribeStyle(tribesOf(c)[0])}>
     <button type="button" class="handle" aria-label="Move ${esc(c.name)} (arrow keys)">⠿</button>
     <span class="place"></span>
-    <button type="button" class="rn" aria-expanded="false"><span class="rname">${esc(c.name)}</span>
-      <small>${esc(c.occ||"")}${c.actual!==null?` · <b class="outtag">out ${ord(c.actual)}</b>`:""}</small></button>
-    <div class="bio">${facts?`<div class="facts">${esc(facts)}</div>`:""}${esc(c.bio||"No profile yet.")}</div>
+    <button type="button" class="rn" aria-expanded="false">${ph?`<img class="av" src="${esc(ph)}" alt="" loading="lazy" onerror="this.remove()">`:""}<span class="rtxt"><span class="rname">${esc(c.name)}</span>
+      <small>${esc(c.occ||"")}${c.actual!==null?` · <b class="outtag">out ${ord(c.actual)}</b>`:""}</small></span></button>
+    <div class="bio">${facts?`<div class="facts">${esc(facts)}</div>`:""}${esc(c.bio||"No profile yet.")}${sourcesHTML(c)}</div>
   </li>`;
 }
 function renumber(){
