@@ -13,7 +13,8 @@
  *
  * ONE-TIME SETUP
  *   1. Extensions > Apps Script, paste this file as Code and season.js
- *      as a second file named Season, Save.
+ *      as a second Script file (+ > Script, not HTML) named Season, Save.
+ *      Or skip the second file: paste season.js at the bottom of this one.
  *   2. Run setup()  (authorize when prompted). Builds the tabs and
  *      loads the season. Safe to re-run any time: it updates
  *      profiles/questions and never touches picks, answers or
@@ -50,7 +51,13 @@ const TABS = {
 };
 
 // Resolved at call time: Season.gs may load after this file.
-function sid_(){ return SEASON.seasonId; }
+function season_(){
+  if (typeof SEASON === 'undefined')
+    throw new Error('No season data found. Add a Script file (not HTML) named "Season" containing season.js, '
+                  + 'or paste season.js at the very bottom of this file — then Save and try again.');
+  return SEASON;
+}
+function sid_(){ return season_().seasonId; }
 
 /* ============================ ROUTING ============================ */
 
@@ -297,11 +304,11 @@ function removeAutoSync(){
 function wikiPlan_(){
   const sid = sid_();
   const s = rows_('seasons').find(r => r.seasonId === sid) || {};
-  const title = s.wikiTitle || SEASON.wikiTitle;
+  const title = s.wikiTitle || season_().wikiTitle;
   if (!title) return { ok:false, error:'No Wikipedia page set for this season' };
 
   let parsed;
-  try { parsed = parseWikiFinishes_(fetchWikitext_(title), SEASON.wikiOrder === 'firstOutLast'); }
+  try { parsed = parseWikiFinishes_(fetchWikitext_(title), season_().wikiOrder === 'firstOutLast'); }
   catch (err) { return { ok:false, error:String(err.message || err) }; }
 
   const cast = rows_('cast').filter(c => c.seasonId === sid);
@@ -491,7 +498,7 @@ function hash_(s){
 
 function setup(){
   Object.keys(TABS).forEach(tab_);
-  const S = SEASON, sid = S.seasonId;
+  const S = season_(), sid = S.seasonId;
 
   upsert_('seasons', o => o.seasonId === sid,
     { lockAfterBoots:S.lockAfterBoots || 0, lockNote:S.lockNote || '', wikiTitle:S.wikiTitle || '' },
