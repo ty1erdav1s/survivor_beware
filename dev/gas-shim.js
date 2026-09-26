@@ -2,7 +2,7 @@
    real backend runs locally against a fake spreadsheet kept in localStorage.
    Dev only — loaded by dev/local.html, never deployed. */
 (function(){
-  const KEY = "sb_dev_sheet";
+  const KEY = "dev_sheet_" + SEASON.seasonId;   // one fake sheet per season, so both pools can share 127.0.0.1
   let book; try { book = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) { book = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(book)); } catch (_) {} };
 

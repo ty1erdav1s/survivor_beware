@@ -14,7 +14,10 @@
  * lockAfterBoots picks lock automatically once this many castaways are
  *               out (Survivor: 2 = after Episode 2; Big Brother: 1 =
  *               after the first eviction). 0 = never auto-lock.
+ * skin          'survivor' or 'bb' — the look and wording index.html uses.
  * wikiTitle     Wikipedia page the admin "Check Wikipedia" button reads.
+ * wikiOrder     'firstOutFirst' (Survivor tables) or 'firstOutLast' (Big
+ *               Brother tables list the winner at the top).
  *
  * Profiles: CBS/Paramount+ cast reveal, Wikipedia contestants table,
  * and pre-season previews (Surviving Tribal, Inside Survivor), Sept 2026.
@@ -23,10 +26,12 @@
 var SEASON = {
   seasonId: 's51',
   show: 'survivor',
+  skin: 'survivor',
   title: 'Survivors Beware — Season 51',
   lockAfterBoots: 2,
   lockNote: 'after Episode 2',
   wikiTitle: 'Survivor 51',
+  wikiOrder: 'firstOutFirst',
 
   theme: {
     name:'Torchlight', bg:'#0a130e', surface:'#13221a', line:'#2b4133',
@@ -91,7 +96,7 @@ var SEASON = {
     { qId:'q9', text:'Will someone cry at Tribal Council?' }
   ],
 
-  // Added to the roster on setup() if missing; nobody is ever removed from here.
+  // Seeds the player list the first time setup() runs for this season; after that, use Admin → Players.
   roster: ['Tyler','Lauren','Lisa','Jeremy','Natalie/Josh','Brandie','Morgan',
            'Thomas','Carol','Pat','Jamie','Kelly','AI']
 };

@@ -1,5 +1,6 @@
 /**********************************************************************
- * SURVIVORS BEWARE — backend
+ * REALITY-TV PREDICTION POOL — backend (Survivors Beware / The Veto Royale)
+ * Identical in both repos; everything show-specific lives in Season.gs.
  * ------------------------------------------------------------------
  * One Google Sheet is the data store. This script exposes it as a
  * tiny JSON API that the GitHub Pages site reads from and writes to.
@@ -178,7 +179,7 @@ function submitEntry_(b){
   const ranks = b.ranks || {};
   const vals = cast.map(c => Number(ranks[c.castId]));
   if (vals.some(v => !(v >= 1 && v <= N)) || new Set(vals).size !== N)
-    return { ok:false, error:'Rank every castaway exactly once, 1 to ' + N };
+    return { ok:false, error:'Rank everyone in the cast exactly once, 1 to ' + N };
 
   // every circumstantial question needs a Yes or No
   const qs = rows_('questions').filter(q => q.seasonId === sid);
@@ -228,7 +229,7 @@ function enterEviction(b){
   const clash = cast.find(c => !blank_(c.actual) && Number(c.actual) === place && Number(c.castId) !== id);
   if (clash) return { ok:false, error:ord_(place) + ' is already ' + clash.name + ' — undo them first' };
   const ok = setCell_('cast', o => o.seasonId === sid && Number(o.castId) === id, 'actual', place);
-  return ok ? { ok:true } : { ok:false, error:'Castaway not found' };
+  return ok ? { ok:true } : { ok:false, error:'Not found in the cast' };
 }
 
 function undoEviction(b){
@@ -257,11 +258,12 @@ function setLockMode(b){
 }
 
 /* ====================== WIKIPEDIA VOTE-OUTS ===================== */
-// Reads the "Finish" column of the season's contestants table. Wikipedia lists
-// finished castaways first, in boot order, so the k-th finished row (0-based)
-// placed castSize - k. Nothing is written by checkWikipedia; applyWikipedia
-// only fills castaways with no placement yet into free placements — it never
-// overwrites something you recorded by hand.
+// Reads the result column of the season's contestants table on Wikipedia.
+// Survivor tables list the first boot at the top; Big Brother tables list the
+// winner at the top (Season.gs wikiOrder: 'firstOutLast'). Either way, the k-th
+// person out (0-based) placed castSize - k. checkWikipedia writes nothing;
+// applyWikipedia only fills castaways with no placement yet into free
+// placements — it never overwrites something you recorded by hand.
 
 function checkWikipedia(){ return wikiPlan_(); }
 
@@ -299,7 +301,7 @@ function wikiPlan_(){
   if (!title) return { ok:false, error:'No Wikipedia page set for this season' };
 
   let parsed;
-  try { parsed = parseWikiFinishes_(fetchWikitext_(title)); }
+  try { parsed = parseWikiFinishes_(fetchWikitext_(title), SEASON.wikiOrder === 'firstOutLast'); }
   catch (err) { return { ok:false, error:String(err.message || err) }; }
 
   const cast = rows_('cast').filter(c => c.seasonId === sid);
@@ -332,38 +334,66 @@ function fetchWikitext_(title){
   return j.parse.wikitext;
 }
 
-const FINISH_RE_ = /\d+(?:st|nd|rd|th)\s+voted\s+out|medically\s+evacuated|evacuated|\bquit\b|eliminated|lost\s+(?:the\s+)?(?:fire|challenge|duel)|sole\s+survivor|(?:co-)?runner-up/i;
+const FINISH_RE_ = /\d+(?:st|nd|rd|th)\s+voted\s+out|\{\{\s*evicted\s*\|\s*\d+|medically\s+evacuated|evacuated|\bquit\b|expelled|eliminated|lost\s+(?:the\s+)?(?:fire|challenge|duel)|sole\s+survivor|\bwinner\b|(?:co-)?runner-up/i;
+const OPEN_RE_ = /participating|\{\{\s*tba\b/i;
 
-function parseWikiFinishes_(text){
-  // the contestants table: caption mentions contestants, rows use {{sortname}}
-  let at = text.search(/\n\|\+[^\n]*contestants/i);
-  if (at < 0) at = text.indexOf('{{sortname');
-  if (at < 0) throw new Error('Could not find the contestants table');
-  const start = text.lastIndexOf('{|', at), end = text.indexOf('\n|}', at);
-  const table = text.slice(start, end < 0 ? undefined : end);
+function parseWikiFinishes_(text, firstOutLast){
+  const rows = [];
+  let carry = null, carryLeft = 0;          // a result cell with rowspan covers the rows below it
+  contestantTable_(text).split(/\n\|-/).forEach(seg => {
+    const name = rowName_(seg);
+    if (!name) return;
+    const lines = seg.replace(/^\s*![^\n]*/, '').split('\n');   // skip the name cell itself
+    let status = null;
+    for (const line of lines) {
+      const m = line.match(FINISH_RE_);
+      if (m || OPEN_RE_.test(line)) {
+        status = m ? { out:true, finish:m[0].replace(/\{\{\s*evicted\s*\|\s*(\d+)/i, 'Evicted day $1') } : { out:false };
+        const span = line.match(/rowspan\s*=\s*"?(\d+)/i);
+        carry = status; carryLeft = span ? Number(span[1]) - 1 : 0;
+        break;
+      }
+    }
+    if (!status && carryLeft > 0) { status = carry; carryLeft--; }
+    rows.push({ first:name.first, last:name.last, out:!!(status && status.out), finish:(status && status.finish) || '' });
+  });
+  if (firstOutLast) rows.reverse();
 
   const out = { finished:[], inOrder:true };
   let sawOpen = false;
-  table.split(/\n\|-/).forEach(row => {
-    const name = rowName_(row);
-    if (!name) return;
-    const m = row.replace(/^\s*![^\n]*/, '').match(FINISH_RE_);   // skip the name cell itself
-    if (m) {
-      if (sawOpen) out.inOrder = false;       // a finisher below a still-playing row
-      out.finished.push({ first:name.first, last:name.last, finish:m[0] });
-    } else sawOpen = true;
+  rows.forEach(r => {
+    if (!r.out) { sawOpen = true; return; }
+    if (sawOpen) out.inOrder = false;       // someone out listed among people still playing
+    out.finished.push(r);
   });
   return out;
 }
 
-function rowName_(row){
-  const sn = row.match(/\{\{\s*sortname\s*\|([^|}]*)\|([^|}]*)/i);
+// The contestants table: captioned "contestants"/"houseguests", else the first with a Finish/Result column.
+function contestantTable_(text){
+  const tables = [];
+  for (let i = text.indexOf('{|'); i >= 0; i = text.indexOf('{|', i + 2)) {
+    const end = text.indexOf('\n|}', i);
+    tables.push(text.slice(i, end < 0 ? undefined : end));
+    if (end < 0) break;
+    i = end;
+  }
+  const t = tables.find(t => /\n\|\+[^\n]*(contestants|houseguests|castaways)/i.test(t))
+         || tables.find(t => /\n![^\n]*\b(Finish|Result)\b/.test(t));
+  if (!t) throw new Error('Could not find the contestants table');
+  return t;
+}
+
+function rowName_(seg){
+  const sn = seg.match(/\{\{\s*sortname\s*\|([^|}]*)\|([^|}]*)/i);
   if (sn) return { first:sn[1].trim(), last:sn[2].trim() };
-  const hd = row.match(/!\s*scope="row"[^\n]*?\|\s*([^\n]+)/i);   // fallback: plain [[Name]] header
-  if (!hd) return null;
-  const txt = hd[1].replace(/\[\[(?:[^|\]]*\|)?([^\]]*)\]\]/g, '$1').replace(/\{\{[^}]*\}\}/g, '').trim();
-  const parts = txt.split(/\s+/);
-  return parts.length ? { first:parts.slice(0, -1).join(' '), last:parts[parts.length - 1] } : null;
+  const hd = seg.match(/^\s*!([^\n]*)/);                            // plain "! Name" header cell
+  if (!hd || /scope\s*=\s*"?col/i.test(hd[1])) return null;
+  let txt = hd[1].split(/<br\s*\/?>/i)[0]                                 // "Angela Murray<br />Big Brother 26"
+    .replace(/\[\[(?:[^|\]]*\|)?([^\]]*)\]\]/g, '$1').replace(/\{\{[^}]*\}\}/g, '').replace(/<[^>]*>/g, '');
+  if (txt.indexOf('|') >= 0) txt = txt.slice(txt.lastIndexOf('|') + 1);   // drop cell attributes
+  const parts = txt.replace(/'''?/g, '').trim().split(/\s+/).filter(Boolean);
+  return parts.length >= 2 ? { first:parts.slice(0, -1).join(' '), last:parts[parts.length - 1] } : null;
 }
 
 function matchCast_(cast, first, last){
@@ -411,18 +441,22 @@ function setCell_(name, matchFn, col, value){
   }
   return false;
 }
-// update the first row matching matchFn with `fields`, or append one built from onInsert + fields
-function upsert_(name, matchFn, fields, onInsert){
+// First row matching matchFn: `always` fields are overwritten, `ifBlank` fields only fill empty
+// cells (so hand edits in a live sheet survive). No match: append a row from all three.
+function upsert_(name, matchFn, always, ifBlank, onInsert){
   const sh = tab_(name), head = TABS[name], vals = sh.getDataRange().getValues();
   for (let i = 1; i < vals.length; i++){
     const o = {}; head.forEach((h,j) => o[h] = vals[i][j]);
     if (matchFn(o)) {
-      const row = head.map((h,j) => h in fields ? fields[h] : (vals[i][j] === undefined ? '' : vals[i][j]));
+      const row = head.map((h,j) => {
+        const cur = vals[i][j] === undefined ? '' : vals[i][j];
+        return h in always ? always[h] : (h in ifBlank && blank_(cur)) ? ifBlank[h] : cur;
+      });
       sh.getRange(i+1, 1, 1, head.length).setValues([row]);
       return;
     }
   }
-  const all = Object.assign({}, onInsert || {}, fields);
+  const all = Object.assign({}, onInsert || {}, ifBlank, always);
   sh.appendRow(head.map(h => h in all ? all[h] : ''));
 }
 // remove rows matching (seasonId,name) then append newRows; whole-tab rewrite (safe under lock, small data)
@@ -450,28 +484,31 @@ function hash_(s){
 
 /* ============================ SETUP ============================ */
 // Run from the editor at the start of a season, and again whenever Season.gs
-// changes. Upserts only: picks, answers and recorded placements are kept.
+// changes. Safe on a season that's under way: picks, answers, placements,
+// resolved questions and the player list are never touched, and names, titles
+// and question text only fill in if blank. Profiles and the season's lock /
+// Wikipedia settings always update, so fixing a bio is just edit + re-run.
 
 function setup(){
   Object.keys(TABS).forEach(tab_);
   const S = SEASON, sid = S.seasonId;
 
   upsert_('seasons', o => o.seasonId === sid,
-    { seasonId:sid, show:S.show, title:S.title, castSize:S.cast.length, theme:JSON.stringify(S.theme),
-      lockAfterBoots:S.lockAfterBoots || 0, lockNote:S.lockNote || '', wikiTitle:S.wikiTitle || '' },
+    { lockAfterBoots:S.lockAfterBoots || 0, lockNote:S.lockNote || '', wikiTitle:S.wikiTitle || '' },
+    { seasonId:sid, show:S.show, title:S.title, castSize:S.cast.length, theme:JSON.stringify(S.theme) },
     { episode:1, locked:'auto' });
 
   S.cast.forEach(c => upsert_('cast', o => o.seasonId === sid && Number(o.castId) === c.id,
-    { seasonId:sid, castId:c.id, name:c.name, occ:c.occ || '', age:c.age || '', home:c.home || '',
-      tribe:c.tribe || '', bio:c.bio || '' },
+    { age:c.age || '', home:c.home || '', tribe:c.tribe || '', bio:c.bio || '' },
+    { seasonId:sid, castId:c.id, name:c.name, occ:c.occ || '' },
     { actual:c.out || '' }));
 
   S.questions.forEach(q => upsert_('questions', o => o.seasonId === sid && o.qId === q.qId,
-    { seasonId:sid, qId:q.qId, text:q.text }, { isTrue:'' }));
+    {}, { seasonId:sid, qId:q.qId, text:q.text }, { isTrue:'' }));
 
-  const have = rows_('players').filter(p => p.seasonId === sid).map(p => p.name);
-  (S.roster || []).filter(n => have.indexOf(n) < 0)
-    .forEach(n => tab_('players').appendRow([sid, n, n === 'AI', '', '']));
+  // roster only seeds a season with no players yet, so re-running never re-adds someone you removed
+  if (!rows_('players').some(p => p.seasonId === sid))
+    (S.roster || []).forEach(n => tab_('players').appendRow([sid, n, n === 'AI', '', '']));
 
   SpreadsheetApp.flush();
 }

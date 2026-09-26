@@ -3,17 +3,50 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Survivors Beware</title>
+<title>Prediction Pool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="season.js"></script>
+<script>
+/* season.js picks the show's skin (look + wording); apply it before first paint. */
+(function(){
+  var skin = (window.SEASON && SEASON.skin) || "survivor", d = document.documentElement;
+  d.setAttribute("data-skin", skin);
+  var display = { survivor:"family=Cinzel:wght@600;700;900&", bb:"family=Oswald:wght@400;500;600;700&family=Orbitron:wght@500;700;800&" }[skin] || "";
+  var l = document.createElement("link"); l.rel = "stylesheet";
+  l.href = "https://fonts.googleapis.com/css2?" + display + "family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap";
+  document.head.appendChild(l);
+})();
+</script>
 <style>
 :root{
   --bg:#0a130e;--bg-2:#0f1c15;--surface:#13221a;--surface-2:#1b2f23;--line:#2b4133;
   --text:#f4ead5;--muted:#9fb09a;--accent:#ff8a2b;--accent-dim:#7a3f12;
   --gold:#f2c14e;--danger:#e5484d;--evicted:#3a3a2c;--good:#6fd08c;
   --font-display:'Cinzel',Georgia,serif;--font-body:'IBM Plex Sans',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--radius:14px;
+  --font-time:var(--font-display);--on-accent:#1a0e04;
 }
+/* ---- Big Brother skin (The Veto Royale: time travel) ---- */
+:root[data-skin=bb]{
+  --bg:#0d0221;--bg-2:#170a30;--surface:#1f1140;--surface-2:#2a1a52;--line:#3d2568;
+  --text:#fdf1e0;--muted:#a996c9;--accent:#ff7a1a;--accent-dim:#7a3a10;
+  --gold:#ffcc33;--danger:#ff3864;--evicted:#4a3b6b;--good:#2de8c9;
+  --font-display:'Oswald',system-ui,sans-serif;--font-time:'Orbitron',var(--font-mono);--on-accent:#04121a;
+}
+[data-skin=bb] body{background:radial-gradient(1200px 600px at 50% -10%,#3a1568 0%,transparent 60%),var(--bg)}
+[data-skin=bb] body::before{background:repeating-linear-gradient(to bottom,rgba(255,255,255,.014) 0 1px,transparent 1px 3px);mix-blend-mode:overlay;opacity:.5}
+[data-skin=bb] .titles h1{font-weight:700;font-style:italic;letter-spacing:.1em;transform:skewX(-3deg);text-shadow:none}
+[data-skin=bb] .titles h1 .thin{font-weight:600;font-style:normal}
+[data-skin=bb] #seasonline{font-weight:400;letter-spacing:.06em}
+[data-skin=bb] .hg .lit{display:none}
+[data-skin=bb] .hg .placard{background:repeating-linear-gradient(45deg,var(--gold) 0 8px,#1a1300 8px 16px);color:#1a1300}
+[data-skin=bb] .mark-survivor,:root:not([data-skin=bb]) .mark-bb{display:none!important}
+.eyewrap{position:relative;width:46px;height:46px;flex:0 0 auto}
+.eye{position:relative;z-index:2;width:46px;height:46px;filter:drop-shadow(0 0 10px var(--accent-dim))}
+.eye .iris{animation:pulse 3.6s ease-in-out infinite;transform-origin:center}
+.vortex{position:absolute;z-index:1;inset:-15px;width:76px;height:76px;animation:spin 16s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.85}50%{opacity:.35}}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{background:radial-gradient(900px 480px at 50% -8%,#4a2a0e 0%,transparent 60%),radial-gradient(1400px 700px at 50% 110%,#0f2a1b 0%,transparent 65%),var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:80px;overflow-x:hidden}
@@ -36,7 +69,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;bac
 .navlink-ic{flex:0 0 auto;width:16px;text-align:center;color:var(--accent)}
 .navlink-label{overflow:hidden;text-overflow:ellipsis}
 .sidenav .infopop{left:calc(100% + 10px);bottom:auto;top:0}
-.navToggle{display:none;position:fixed;bottom:18px;right:18px;z-index:41;width:46px;height:46px;border-radius:50%;border:1px solid var(--accent-dim);background:var(--accent);color:#1a0e04;font-size:1.1rem;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.navToggle{display:none;position:fixed;bottom:18px;right:18px;z-index:41;width:46px;height:46px;border-radius:50%;border:1px solid var(--accent-dim);background:var(--accent);color:var(--on-accent);font-size:1.1rem;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.4)}
 .navBackdrop{display:none;position:fixed;inset:0;background:rgba(4,7,14,.6);z-index:39}
 .navBackdrop.show{display:block}
 .content{margin-left:212px;transition:margin-left .22s ease}
@@ -66,7 +99,7 @@ header{padding:26px 0 14px}
 .titles h1{font-family:var(--font-display);font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:clamp(1.5rem,5.5vw,2.35rem);line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.5)}
 .titles h1 .thin{font-weight:700;background:linear-gradient(90deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px var(--accent-dim))}
 .sub{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);letter-spacing:.05em;margin-top:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-#seasonline{font-family:var(--font-display);font-weight:700;letter-spacing:.08em;background:rgba(0,0,0,.35);padding:3px 9px;border-radius:4px;border:1px solid var(--line)}
+#seasonline{font-family:var(--font-time);font-weight:700;letter-spacing:.08em;background:rgba(0,0,0,.35);padding:3px 9px;border-radius:4px;border:1px solid var(--line)}
 .livepill{display:inline-flex;align-items:center;gap:6px;color:var(--accent);border:1px solid var(--accent-dim);border-radius:100px;padding:2px 9px;font-weight:600}
 .bolt{width:10px;height:10px;fill:var(--accent);filter:drop-shadow(0 0 4px var(--accent));animation:flicker 1.8s infinite}
 @keyframes flicker{0%,19%,21%,23%,54%,56%,100%{opacity:1}20%,22%,55%{opacity:.3}}
@@ -82,7 +115,7 @@ header{padding:26px 0 14px}
 .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .btn{font-family:var(--font-mono);font-size:.8rem;letter-spacing:.04em;padding:9px 16px;border-radius:100px;border:1px solid var(--accent-dim);background:var(--surface);color:var(--accent);cursor:pointer;transition:.18s}
 .btn:hover{background:var(--surface-2);border-color:var(--accent)}
-.btn.primary{background:var(--accent);color:#1a0e04;border-color:var(--accent);font-weight:600}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
 .btn.ghost{color:var(--muted);border-color:var(--line)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 section{margin-top:30px}
@@ -110,8 +143,8 @@ section{margin-top:30px}
 .who .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .who .nm{font-weight:700;font-size:1.02rem}
 .tag{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:100px;border:1px solid}
-.tag.imm{color:var(--gold);border-color:#5a4a12;background:#241d06}
-.tag.tribal{color:var(--danger);border-color:#4a1526;background:#230810}
+.tag.lead{color:var(--gold);border-color:#5a4a12;background:#241d06}
+.tag.last{color:var(--danger);border-color:#4a1526;background:#230810}
 .tag.bot{color:var(--accent);border-color:var(--accent-dim);background:#2a1608}
 .probwrap{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.7rem;color:var(--muted)}
 .bar{height:6px;width:120px;max-width:34vw;background:var(--bg-2);border-radius:100px;overflow:hidden;border:1px solid var(--line)}
@@ -122,7 +155,7 @@ section{margin-top:30px}
 .picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .chip{font-family:var(--font-mono);font-size:.78rem;padding:7px 13px;border-radius:100px;background:var(--surface);border:1px solid var(--line);color:var(--text);cursor:pointer;transition:.18s}
 .chip:hover{border-color:var(--accent-dim)}
-.chip.on{background:var(--accent);color:#1a0e04;border-color:var(--accent);font-weight:600}
+.chip.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
 .statline{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
 .stat{flex:1;min-width:120px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
@@ -209,7 +242,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 .qrow .qt{font-size:.86rem}
 .yn{display:flex;gap:6px}
 .yn button{font-family:var(--font-mono);font-size:.72rem;padding:5px 12px;border-radius:100px;border:1px solid var(--line);background:var(--bg-2);color:var(--muted);cursor:pointer}
-.yn button.on{background:var(--accent);color:#1a0e04;border-color:var(--accent);font-weight:600}
+.yn button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
 .msg{font-size:.82rem;padding:10px 12px;border-radius:10px;margin-top:12px}
 .msg.err{background:#230810;color:var(--danger);border:1px solid #4a1526}
 .msg.ok{background:#06251a;color:var(--good);border:1px solid #114634}
@@ -227,20 +260,21 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
   <aside class="sidenav" id="sidenav">
     <div class="sidenav-head">
       <div class="brandmini">
-        <svg viewBox="0 0 64 80" aria-hidden="true"><path d="M32 4c7 9 13 15 13 24a13 13 0 0 1-26 0c0-6 3-10 6-13 1 5 3 7 6 7-2-7 0-12 1-18z" fill="var(--accent)"/><path d="M22 40h20l-4 8H26z" fill="#8a5a2b"/><rect x="29" y="48" width="6" height="30" rx="2" fill="#6b4423"/></svg>
+        <svg class="mark-survivor" viewBox="0 0 64 80" aria-hidden="true"><path d="M32 4c7 9 13 15 13 24a13 13 0 0 1-26 0c0-6 3-10 6-13 1 5 3 7 6 7-2-7 0-12 1-18z" fill="var(--accent)"/><path d="M22 40h20l-4 8H26z" fill="#8a5a2b"/><rect x="29" y="48" width="6" height="30" rx="2" fill="#6b4423"/></svg>
+        <svg class="mark-bb" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="32" rx="30" ry="18" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="32" cy="32" r="10" fill="var(--accent)"/><circle cx="32" cy="32" r="4.5" fill="var(--bg)"/></svg>
         <span class="brandmini-label">Jump to</span>
       </div>
       <button class="collapseBtn" id="collapseBtn" aria-label="Collapse navigation">«</button>
     </div>
     <div class="navlink-row">
-      <button class="navlink" data-target="wallSection"><span class="navlink-ic">▦</span><span class="navlink-label">Torch Wall</span></button>
-      <button class="infobtn" data-pop="popWall" aria-label="About the Torch Wall">i</button>
-      <div class="infopop" id="popWall">The full cast — torch lit while they're still in the game, snuffed out with a placement number once voted out.</div>
+      <button class="navlink" data-target="wallSection"><span class="navlink-ic">▦</span><span class="navlink-label" data-t="wall">Torch Wall</span></button>
+      <button class="infobtn" data-pop="popWall" aria-label="About the wall">i</button>
+      <div class="infopop" id="popWall" data-t="wallInfo"></div>
     </div>
     <div class="navlink-row">
       <button class="navlink" data-target="standingsSection"><span class="navlink-ic">◷</span><span class="navlink-label">Standings</span></button>
       <button class="infobtn" data-pop="popStandings" aria-label="About Standings">i</button>
-      <div class="infopop" id="popStandings">Score = how far each guess lands from reality — lowest wins. Win probabilities come from thousands of simulated boot orders.</div>
+      <div class="infopop" id="popStandings">Score = how far each guess lands from reality — lowest wins. Win probabilities come from thousands of simulated finishes.</div>
     </div>
     <div class="navlink-row">
       <button class="navlink" data-target="closeSection"><span class="navlink-ic">◎</span><span class="navlink-label">Am I Close?</span></button>
@@ -259,7 +293,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
   <div class="wrap">
   <header>
     <div class="brandrow">
-      <div class="torchwrap">
+      <div class="torchwrap mark-survivor">
         <svg class="torch" viewBox="0 0 64 80" aria-hidden="true">
           <path class="flame" d="M32 4c7 9 13 15 13 24a13 13 0 0 1-26 0c0-6 3-10 6-13 1 5 3 7 6 7-2-7 0-12 1-18z" fill="var(--accent)"/>
           <path class="core" d="M32 18c3 4 6 8 6 12a6 6 0 0 1-12 0c0-3 2-5 3-7 1 2 2 3 3 3-1-3 0-6 0-8z" fill="var(--gold)"/>
@@ -268,14 +302,26 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
           <rect x="29" y="48" width="6" height="30" rx="2" fill="#6b4423"/>
         </svg>
       </div>
+      <div class="eyewrap mark-bb">
+        <svg class="vortex" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 7" opacity=".55"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="3 6" opacity=".5"/>
+          <circle cx="50" cy="50" r="24" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="2 5" opacity=".45"/>
+        </svg>
+        <svg class="eye" viewBox="0 0 64 64" aria-hidden="true">
+          <ellipse cx="32" cy="32" rx="30" ry="18" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <circle class="iris" cx="32" cy="32" r="10" fill="var(--accent)"/>
+          <circle cx="32" cy="32" r="4.5" fill="var(--bg)"/>
+        </svg>
+      </div>
       <div class="titles">
-        <h1 id="title">Survivors <span class="thin">Beware</span></h1>
+        <h1 id="title">&nbsp;</h1>
         <div class="sub">
           <span class="livepill"><svg class="bolt" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>LIVE</span>
           <span id="seasonline">LOADING…</span>
           <span class="popwrap">
             <button class="helpBtn" data-pop="popRules" aria-label="How scoring works">?</button>
-            <div class="infopop below" id="popRules">Put the castaways in the order you think they'll go out. Score = how far each guess lands from reality. <b>Lowest score wins.</b> Nail a placement and you subtract a point; call the winner and you subtract three. Each circumstantial question you get right is another point off.</div>
+            <div class="infopop below" id="popRules">Put the <span data-t="many">castaways</span> in the order you think they'll go out. Score = how far each guess lands from reality. <b>Lowest score wins.</b> Nail a placement and you subtract a point; call the winner and you subtract three. Each circumstantial question you get right is another point off.</div>
           </span>
         </div>
       </div>
@@ -287,7 +333,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
     <div class="lockline" id="lockline"></div>
   </header>
 
-  <section id="wallSection"><div class="eyebrow">The Torch Wall</div><div class="wall" id="wall"></div></section>
+  <section id="wallSection"><div class="eyebrow" data-t="wallTitle">The Torch Wall</div><div class="wall" id="wall"></div></section>
   <section id="standingsSection"><div class="eyebrow">Standings &amp; Win Probability</div><div class="board" id="board"></div></section>
   <section id="closeSection"><div class="eyebrow">Am I Close?</div><div class="picker" id="picker"></div><div class="card" id="detail"></div></section>
   <section id="questionsSection"><div class="eyebrow">Circumstantial Questions</div><div class="qgrid" id="qlist"></div></section>
@@ -303,8 +349,8 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
     <div id="sLock"></div>
     <div class="field"><label for="sName">Who are you?</label><select id="sName"></select><div class="hint" id="sNameMsg"></div></div>
     <div class="field">
-      <label>Boot order &mdash; drag to arrange</label>
-      <div class="hint tight">Top = first voted out &middot; bottom = Sole Survivor. Drag a row by its <b>⠿</b> handle (or focus the handle and use ↑ ↓). Tap a name to read their profile.</div>
+      <label><span data-t="order">Boot order</span> &mdash; drag to arrange</label>
+      <div class="hint tight">Top = first <span data-t="out">voted out</span> &middot; bottom = <span data-t="winner">Sole Survivor</span>. Drag a row by its <b>⠿</b> handle (or focus the handle and use ↑ ↓). Tap a name to read their profile.</div>
       <ol class="ranklist" id="sRanks"></ol>
     </div>
     <div class="field" id="sQwrap"><label>Circumstantial questions &mdash; answer every one</label><div id="sQuestions"></div><div class="hint" id="sQMsg"></div></div>
@@ -322,14 +368,14 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
     <div class="divider"></div>
 
     <div class="adminblock">
-      <h3>Record a vote-out</h3>
-      <div class="inline"><div><label class="minilabel">Castaway</label><select id="aEvictWho"></select></div>
+      <h3 data-t="record">Record a vote-out</h3>
+      <div class="inline"><div><label class="minilabel" data-t="oneCap">Castaway</label><select id="aEvictWho"></select></div>
       <div style="width:96px"><label class="minilabel">Placement</label><input type="number" id="aEvictPlace" min="1"/></div></div>
-      <div class="rowbtns"><button class="btn" id="aEvict">Snuff the torch</button></div>
+      <div class="rowbtns"><button class="btn" id="aEvict" data-t="recordBtn">Snuff the torch</button></div>
     </div>
 
     <div class="adminblock">
-      <h3>Boot order</h3>
+      <h3 data-t="order">Boot order</h3>
       <div class="hint tight">Clicked the wrong person? Undo them, or change the placement and save.</div>
       <div id="aBoots"></div>
     </div>
@@ -374,18 +420,37 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
   </div>
 </div>
 
-<script src="season.js"></script>
 <script>
 /* ===================================================================
    CONFIG — paste your Apps Script Web App /exec URL here to go live.
    Leave empty to preview on demo data built from season.js.
-   (This must be the Survivor deployment, not the Big Brother one.)
+   Each pool needs its own deployment — never reuse the other show's URL.
    =================================================================== */
 const API_URL = "";
 
 let MODEL=null;           // normalized live model
 const LIVE = !!API_URL;
 const N_SIMS = 20000;
+// Show-specific wording and browser-storage prefix. BB keeps its original vr_ keys so
+// existing players' edit tokens and the saved admin passphrase keep working.
+const SKINS={
+  survivor:{brand:"Survivors Beware",accent:"Beware",one:"castaway",oneCap:"Castaway",many:"castaways",
+    out:"voted out",outCard:"Voted Out",outNoun:"vote-out",winner:"Sole Survivor",order:"Boot order",
+    wall:"Torch Wall",wallTitle:"The Torch Wall",wallInfo:"The full cast — torch lit while they're still in the game, snuffed out with a placement number once voted out.",
+    lead:"Immunity · leader",last:"headed to tribal",sims:"boot orders",
+    record:"Record a vote-out",recordBtn:"Snuff the torch",
+    footer:"Outwit, outplay, outpick. The tribe has spoken.",store:"sb_"},
+  bb:{brand:"The Veto Royale",accent:"Royale",one:"houseguest",oneCap:"Houseguest",many:"houseguests",
+    out:"evicted",outCard:"Evicted",outNoun:"eviction",winner:"the winner",order:"Eviction order",
+    wall:"Memory Wall",wallTitle:"The Memory Wall",wallInfo:"The full cast — grayed out with a placement number once evicted, full color while they're still in the house.",
+    lead:"HOH · leader",last:"on the block",sims:"eviction orders",
+    record:"Enter an eviction",recordBtn:"Record eviction",
+    footer:"This season's a time warp — pick wisely before the flux capacitor fries.",store:"vr_"}
+};
+const T=SKINS[document.documentElement.getAttribute("data-skin")]||SKINS.survivor;
+document.title=T.brand;
+document.querySelectorAll("[data-t]").forEach(el=>el.textContent=T[el.dataset.t]);
+
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ---- demo: real cast from season.js, made-up picks and answers so the board has something to show ---- */
@@ -484,12 +549,12 @@ function lockText(s){
   if(s.lockMode==="open") return "🔓 Picks are open (admin override) — get yours in.";
   if(!s.lockAfterBoots) return "";
   const left=s.lockAfterBoots-s.bootsSoFar;
-  return `🔥 Picks lock <b>${esc(s.lockNote||`after vote-out #${s.lockAfterBoots}`)}</b> — ${left} more vote-out${left===1?"":"s"} to go. Edit as often as you like until then.`;
+  return `🔥 Picks lock <b>${esc(s.lockNote||`after ${T.outNoun} #${s.lockAfterBoots}`)}</b> — ${left} more ${T.outNoun}${left===1?"":"s"} to go. Edit as often as you like until then.`;
 }
 
 function renderAll(){
   applyTheme(MODEL.season.theme);
-  document.getElementById("title").innerHTML = MODEL.season.title.replace(/Beware/,'<span class="thin">Beware</span>');
+  document.getElementById("title").innerHTML = esc(MODEL.season.title||T.brand).replace(T.accent,'<span class="thin">'+T.accent+'</span>');
   document.getElementById("seasonline").textContent =
     `${(MODEL.season.show||'').replace('-',' ').toUpperCase()} · EPISODE ${MODEL.season.episode}` + (LIVE?'':' · DEMO');
   document.getElementById("lockline").innerHTML = lockText(MODEL.season);
@@ -498,7 +563,7 @@ function renderAll(){
   // wall
   document.getElementById("wall").innerHTML = MODEL.cast.map(c=>{
     const out=c.actual!==null;
-    return `<div class="hg ${out?'out':'in'}">${out?`<div class="placard">Voted Out</div>`:`<div class="lit"></div>`}<div class="glow"></div>
+    return `<div class="hg ${out?'out':'in'}">${out?`<div class="placard">${T.outCard}</div>`:`<div class="lit"></div>`}<div class="glow"></div>
       <div class="mono">${initials(c.name)}</div><div class="nm">${c.name}</div><div class="occ">${c.occ||''}</div>
       ${out?`<div class="place">${ord(c.actual)}</div>`:``}</div>`;
   }).join("");
@@ -511,8 +576,8 @@ function renderAll(){
   } else {
     document.getElementById("board").innerHTML = standings.map(s=>{
       const tags=[];
-      if(s.rank===1) tags.push(`<span class="tag imm">Immunity · leader</span>`);
-      if(s.rank===standings.length && standings.length>1) tags.push(`<span class="tag tribal">headed to tribal</span>`);
+      if(s.rank===1) tags.push(`<span class="tag lead">${T.lead}</span>`);
+      if(s.rank===standings.length && standings.length>1) tags.push(`<span class="tag last">${T.last}</span>`);
       if(s.pl.isAI) tags.push(`<span class="tag bot">the algorithm</span>`);
       const pct=s.prob*100;
       return `<div class="row" data-player="${esc(s.pl.name)}"><div class="rk">${s.rank}</div>
@@ -522,7 +587,7 @@ function renderAll(){
     }).join("");
     requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".bar span").forEach(b=>b.style.width=b.dataset.w+"%")));
     document.getElementById("popStandings").textContent =
-      `Score = how far each guess lands from reality — lowest wins. Win probabilities come from ${N_SIMS.toLocaleString()} simulated boot orders of the ${unresolved().length} still in the game.`;
+      `Score = how far each guess lands from reality — lowest wins. Win probabilities come from ${N_SIMS.toLocaleString()} simulated ${T.sims} of the ${unresolved().length} still in the game.`;
     // am i close
     document.getElementById("picker").innerHTML = MODEL.players.map(p=>`<button class="chip" data-player="${esc(p.name)}">${esc(p.name)}</button>`).join("");
     renderDetail(standings[0].pl.name);
@@ -548,11 +613,11 @@ function renderDetail(name){
       <div class="stat"><div class="k">Win chance</div><div class="v acc">${s.prob*100<1?'<1':(s.prob*100).toFixed(0)}%</div></div>
       <div class="stat"><div class="k">Behind leader</div><div class="v ${gap===0?'good':''}">${gap===0?'LEAD':fmt(gap)}</div></div>
     </div>
-    ${res.length?`<div class="subhead">Resolved · ${res.length} voted out</div>`+res.map(r=>`
+    ${res.length?`<div class="subhead">Resolved · ${res.length} ${T.out}</div>`+res.map(r=>`
       <div class="pick"><div class="pn">${r.c.name}<small>you said ${ord(r.guess)} · went ${ord(r.c.actual)}</small></div>
       <div class="guess">${r.pts===0?'exact hit':r.pts<0?'nailed it':Math.abs(r.guess-r.c.actual)+' off'}</div>
       <div class="pts ${cls(r.pts)}">${fmt(r.pts)}</div></div>`).join(""):''}
-    <div class="subhead">Still in play · ${live.length} castaways · sorted by risk</div>
+    <div class="subhead">Still in play · ${live.length} ${T.many} · sorted by risk</div>
     ${live.map(r=>{const L=worst&&r.c.id===worst.c.id&&r.worst>0;
       return `<div class="pick"><div class="pn ${L?'liability':''}">${r.c.name}${L?' ▲':''}<small>you have them ${ord(r.guess)}</small></div>
       <div class="rangebadge">if out next: <b style="color:var(--text)">${fmt(r.worst)}</b><br>best case: ${fmt(r.best)}</div>
@@ -583,10 +648,10 @@ async function boot(){
   try{ MODEL=await loadModel(); }catch(err){ document.getElementById("seasonline").textContent="LOAD ERROR: "+err.message; return; }
   computeStandings(); renderAll();
   document.getElementById("footer").innerHTML =
-    `SURVIVORS BEWARE · a fan prediction pool · lower score wins<br>`+
+    `${T.brand.toUpperCase()} · a fan prediction pool · lower score wins<br>`+
     (LIVE?`Live from your season sheet · players submit, standings update automatically.`
         :`Preview on demo data — paste your Apps Script URL into <b>API_URL</b> to go live.`)+
-    `<br>Outwit, outplay, outpick. The tribe has spoken.`;
+    `<br>${T.footer}`;
   wirePanels();
 }
 async function refresh(){ MODEL=await loadModel(); computeStandings(); renderAll(); }
@@ -620,9 +685,9 @@ const shellEl=document.getElementById("shell"), sidenavEl=document.getElementByI
 function setCollapsed(v){
   shellEl.classList.toggle("collapsed", v);
   collapseBtn.textContent = v?"»":"«";
-  localStorage.setItem("sb_nav_collapsed", v?"1":"0");
+  localStorage.setItem(T.store+"nav_collapsed", v?"1":"0");
 }
-setCollapsed(localStorage.getItem("sb_nav_collapsed")==="1");
+setCollapsed(localStorage.getItem(T.store+"nav_collapsed")==="1");
 collapseBtn.addEventListener("click", ()=>setCollapsed(!shellEl.classList.contains("collapsed")));
 function openMobileNav(){ sidenavEl.classList.add("mobile-open"); navBackdrop.classList.add("show"); }
 function closeMobileNav(){ sidenavEl.classList.remove("mobile-open"); navBackdrop.classList.remove("show"); }
@@ -646,17 +711,17 @@ function wirePanels(){
 }
 
 /* ----- submit ----- */
-const tokKey=name=>"sb_token_"+MODEL.season.seasonId+"_"+name;
+const tokKey=name=>T.store+"token_"+MODEL.season.seasonId+"_"+name;
 
 function buildSubmit(){
   const s=MODEL.season, nameSel=document.getElementById("sName");
   nameSel.innerHTML=MODEL.roster.map(r=>`<option value="${esc(r.name)}">${esc(r.name)}${r.submitted?" ✓":""}</option>`).join("");
-  const last=localStorage.getItem("sb_last_name");
+  const last=localStorage.getItem(T.store+"last_name");
   if(last && MODEL.roster.some(r=>r.name===last)) nameSel.value=last;
   nameSel.onchange=()=>loadEntry(nameSel.value);
   document.getElementById("sLock").innerHTML = s.locked
     ? `<div class="lockbanner locked">🔒 Picks are locked — you can look, but changes won't save.</div>`
-    : `<div class="lockbanner">🔥 ${s.lockAfterBoots?`Picks lock <b>${esc(s.lockNote||`after vote-out #${s.lockAfterBoots}`)}</b>. Until then you can come back and edit from this device.`:`Save now; you can come back and edit from this device.`}</div>`;
+    : `<div class="lockbanner">🔥 ${s.lockAfterBoots?`Picks lock <b>${esc(s.lockNote||`after ${T.outNoun} #${s.lockAfterBoots}`)}</b>. Until then you can come back and edit from this device.`:`Save now; you can come back and edit from this device.`}</div>`;
   document.getElementById("sMsg").innerHTML="";
   loadEntry(nameSel.value);
 }
@@ -759,7 +824,7 @@ document.getElementById("sSave").onclick=async()=>{
   msg.innerHTML=`<div class="msg">Saving…</div>`;
   const res=await api({action:"submitEntry",name,token:localStorage.getItem(tokKey(name))||"",ranks,answers});
   if(res.ok){ if(res.token) localStorage.setItem(tokKey(name),res.token);
-    localStorage.setItem("sb_last_name",name);
+    localStorage.setItem(T.store+"last_name",name);
     msg.innerHTML=`<div class="msg ok">Saved! Standings will refresh.</div>`;
     setTimeout(async()=>{closeOverlay(document.getElementById("submitOverlay"));await refresh();},900);
   } else msg.innerHTML=`<div class="msg err">${esc(res.error)}</div>`;
@@ -768,8 +833,8 @@ document.getElementById("sSave").onclick=async()=>{
 /* ----- admin ----- */
 function buildAdmin(){
   const s=MODEL.season, N=s.castSize;
-  const p=localStorage.getItem("sb_admin_pass")||""; document.getElementById("aPass").value=p;
-  document.getElementById("aPass").oninput=e=>localStorage.setItem("sb_admin_pass",e.target.value);
+  const p=localStorage.getItem(T.store+"admin_pass")||""; document.getElementById("aPass").value=p;
+  document.getElementById("aPass").oninput=e=>localStorage.setItem(T.store+"admin_pass",e.target.value);
 
   document.getElementById("aEvictWho").innerHTML=MODEL.cast.filter(c=>c.actual===null).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");
   document.getElementById("aEvictPlace").value=remainingPlaces().length?Math.max(...remainingPlaces()):"";
@@ -779,7 +844,7 @@ function buildAdmin(){
       <span class="bname">${esc(c.name)}</span>
       <input type="number" min="1" max="${N}" value="${c.actual}" aria-label="Placement for ${esc(c.name)}"/>
       <button class="btn" data-act="save">Save</button><button class="btn ghost" data-act="undo">Undo</button></div>`).join("")
-    : `<div class="hint tight">Nobody voted out yet.</div>`;
+    : `<div class="hint tight">Nobody ${T.out} yet.</div>`;
 
   document.getElementById("aWikiHint").innerHTML = s.wikiTitle
     ? `Reads the contestants table on Wikipedia's <b>${esc(s.wikiTitle)}</b> page and shows what it would record. Nothing saves until you press Apply, and it never overwrites a placement you entered. Heads-up: Wikipedia is often updated during the East Coast airing.`
@@ -790,7 +855,7 @@ function buildAdmin(){
   document.getElementById("aLockMode").value=s.lockMode||"auto";
   document.getElementById("aLockState").innerHTML =
     `Right now: <b>${s.locked?"locked":"open"}</b>.` +
-    (s.lockAfterBoots?` Automatic locks ${esc(s.lockNote||"")} — ${s.bootsSoFar} of ${s.lockAfterBoots} vote-outs so far.`:` No automatic lock is set for this season.`);
+    (s.lockAfterBoots?` Automatic locks ${esc(s.lockNote||"")} — ${s.bootsSoFar} of ${s.lockAfterBoots} ${T.outNoun}s so far.`:` No automatic lock is set for this season.`);
 
   document.getElementById("aQ").innerHTML=MODEL.questions.map(q=>`<option value="${esc(q.qId)}">${esc(q.text)} ${q.isTrue?'· ['+q.isTrue+']':''}</option>`).join("");
 

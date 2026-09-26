@@ -19,7 +19,7 @@ Same shape as The Veto Royale (BB) — but it needs its **own** Sheet and its **
 6. **Deploy → New deployment → Web app**
    - Execute as: **Me**
    - Who has access: **Anyone**
-   - Deploy, copy the **Web app URL** (ends in `/exec`).
+   - Deploy, copy the **Web app URL**. It must end in **`/exec`**. A **Test deployment** gives a `/dev` link instead — that only works for you while signed in to Google, so the site can't use it.
 
 > Changed `Code.gs` or `Season` later? **Deploy → Manage deployments → edit (✏️) → Version: New → Deploy.** Same gotcha as the reunion site.
 
@@ -42,7 +42,7 @@ Leave `API_URL` empty and the site runs on demo data built from `season.js` — 
 ## Start of a season
 
 1. **Profiles** — ask Claude to write `season.js` for the new season (cast, ages, hometowns, tribes, short bios, questions, lock rule). Paste it into the Apps Script **Season** file, run **`setup`**, redeploy a new version, and push the repo.
-   Re-running `setup` is always safe: it adds/updates season, cast, profiles and questions, adds missing roster names, and **never** touches picks, answers or recorded vote-outs. Fixing a typo in a bio mid-season is just "edit, paste, run setup".
+   Re-running `setup` is always safe: profiles and the lock/Wikipedia settings update; names, titles and question text only fill in if blank (so hand edits survive); picks, answers, recorded vote-outs and the player list are **never** touched. Fixing a typo in a bio mid-season is just "edit, paste, run setup".
 2. **Players** — **Admin → Players**: add anyone new, remove anyone sitting out. The list shows who has picks in.
 3. **Picks** — send the link. Everyone picks their name, **drags the cast into boot order** (top = first out, bottom = Sole Survivor; tap a name for the profile) and **answers every circumstantial question** — Save stays disabled until all are answered, and the server rejects incomplete entries too.
 4. **Lock** — picks lock automatically once `lockAfterBoots` castaways are out. Survivor: `2` (after Episode 2). Big Brother: `1` (after the first eviction). The banner on the site and in the picks panel says when. **Admin → Picks lock** can force it locked, or open it again to let a latecomer in, then set it back to Automatic.

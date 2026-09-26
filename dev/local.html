@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="UTF-8" />
-<title>Survivors Beware — local sandbox</title>
+<title>Prediction pool — local sandbox</title>
 <script>
 /* Local sandbox: runs index.html against the REAL apps-script/Code.gs, with a
    fake spreadsheet in this browser (dev/gas-shim.js). Nothing touches Google.
@@ -9,7 +9,7 @@
    Admin passphrase: dev.   Start over with fresh data: add ?reset to the URL. */
 (async () => {
   if (location.search.includes('reset')) {
-    Object.keys(localStorage).filter(k => k.startsWith('sb_')).forEach(k => localStorage.removeItem(k));
+    Object.keys(localStorage).filter(k => /^(sb_|vr_|dev_sheet_)/.test(k)).forEach(k => localStorage.removeItem(k));
   }
   const get = p => fetch(p, { cache:'no-store' }).then(r => { if (!r.ok) throw new Error(p + ' ' + r.status); return r.text(); });
   const [html, shim, code] = await Promise.all([get('../index.html'), get('gas-shim.js'), get('../apps-script/Code.gs')]);
@@ -18,7 +18,7 @@
     '\nif (!SpreadsheetApp.getActiveSpreadsheet().getSheetByName("seasons")) setup();<\/script>';
   const page = html
     .replace('<head>', () => '<head><base href="../">')
-    .replace('const API_URL = "";', () => 'const API_URL = "dev://gas";')
+    .replace(/const API_URL = ".*?";/, () => 'const API_URL = "dev://gas";')
     .replace('<script src="season.js"><\/script>', () => backend);
   if (!page.includes('dev://gas')) throw new Error('Could not find API_URL in index.html');
   document.open(); document.write(page); document.close();
